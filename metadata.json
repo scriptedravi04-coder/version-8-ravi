@@ -1,0 +1,8 @@
+{
+  "name": "ravi version 8",
+  "description": "India\u0027s Most Transparent Influencer Marketplace - connecting creators, brands, and talent managers with zero hidden fees.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

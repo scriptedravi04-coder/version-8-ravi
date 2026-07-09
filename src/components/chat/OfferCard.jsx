@@ -2,14 +2,10 @@ import React from "react";
 import { motion } from "framer-motion";
 import { CheckCircle, Clock } from "lucide-react";
 import { api } from "../../lib/api";
-import { useAuth } from "../../contexts/AuthContext";
 import { toast } from "sonner";
 
-export default function OfferCard({ message, threadId, campaignTitle, onActionComplete }) {
-  const { user } = useAuth();
+export default function OfferCard({ message, threadId, campaignTitle, onActionComplete, isMine, isUserBrand }) {
   const offer = message.metadata || {};
-  const isMine = message.sender_id === user.user_id;
-  const isUserBrand = user.role === 'brand';
   const isPending = offer.status === 'PENDING';
 
   const handleAction = async (action) => {

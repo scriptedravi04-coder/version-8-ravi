@@ -95,7 +95,7 @@ export default function BrandOnboardingFlow({ user, onComplete }) {
       await api.post("/auth/onboard", {
         role: "brand",
         data: { ...formData, onboarding_completed: true }
-      }).catch((apiErr) => console.log("API onboard error (ignored)", apiErr));
+      }).catch((apiErr) => console.error("API onboard error (ignored)", apiErr));
       
       if (onComplete) onComplete();
     } catch (e) {

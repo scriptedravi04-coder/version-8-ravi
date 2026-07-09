@@ -133,7 +133,7 @@ export default function CreatorOnboardingFlow({ user, onComplete }) {
       await api.post("/auth/onboard", {
         role: "creator",
         data: { ...formData, onboarding_completed: true }
-      }).catch((apiErr) => console.log("API onboard error (ignored)", apiErr));
+      }).catch((apiErr) => console.error("API onboard error (ignored)", apiErr));
       
       if (onComplete) onComplete();
     } catch (e) {

@@ -27,7 +27,7 @@ export default function BannerManager() {
   const fetchBanners = async () => {
     try {
       const { data } = await api.get('/banners');
-      setBanners(data || []);
+      setBanners(Array.isArray(data) ? data : []);
     } catch (e) {
       console.warn("Failed to fetch banners", e);
     }

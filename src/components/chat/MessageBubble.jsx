@@ -12,7 +12,7 @@ export default function MessageBubble({ message, isMine, isUserBrand, threadId, 
     return <SystemMessage message={message} />;
   }
   if (isOffer) {
-    return <OfferCard message={message} threadId={threadId} campaignTitle={campaignTitle} onActionComplete={onActionComplete} />;
+    return <OfferCard message={message} threadId={threadId} campaignTitle={campaignTitle} onActionComplete={onActionComplete} isMine={isMine} isUserBrand={isUserBrand} />;
   }
 
   const isBrandSender = message.sender_role === 'brand';

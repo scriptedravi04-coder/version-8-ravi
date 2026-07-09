@@ -6,17 +6,17 @@ import { AnimatePresence, motion } from "framer-motion";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { LoadingProvider } from "./contexts/LoadingContext";
-import GlobalLoader from "./components/GlobalLoader";
-import Layout from "./components/Layout";
-import Landing from "./pages/Landing";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import AuthCallback from "./pages/AuthCallback";
-import Onboarding from "./pages/Onboarding";
-import Explore from "./pages/Explore";
-import CreatorProfile from "./pages/CreatorProfile";
-import Dashboard from "./pages/Dashboard";
-import Campaigns from "./pages/Campaigns";
+import GlobalLoader from "./components/layout/GlobalLoader";
+import Layout from "./components/layout/Layout";
+import Landing from "./pages/dashboard/Landing";
+import Login from "./pages/auth/Login";
+import Signup from "./pages/auth/Signup";
+import AuthCallback from "./pages/auth/AuthCallback";
+import Onboarding from "./pages/auth/Onboarding";
+import Explore from "./pages/dashboard/Explore";
+import CreatorProfile from "./pages/creator/CreatorProfile";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Campaigns from "./pages/campaigns/Campaigns";
 
 function ExploreWrapper() {
   const { user } = useAuth();
@@ -25,39 +25,39 @@ function ExploreWrapper() {
   }
   return <Campaigns />;
 }
-import CampaignDetail from "./pages/CampaignDetail";
-import Collabs from "./pages/Collabs";
-import DealDetail from "./pages/DealDetail";
-import AddCollab from "./pages/AddCollab";
-import UploadedCollab from "./pages/UploadedCollab";
-import Leaderboard from "./pages/Leaderboard";
-import Notifications from "./pages/Notifications";
-import Settings from "./pages/Settings";
-import Earnings from "./pages/Earnings";
-import Chat from "./pages/Chat";
-import Admin from "./pages/Admin";
-import UgcOrders from "./pages/UgcOrders";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import InfoHub from "./pages/InfoHub";
-import CreatorCampaignFlow from "./pages/CreatorCampaignFlow";
-import MyProfile from "./pages/MyProfile";
+import CampaignDetail from "./pages/campaigns/CampaignDetail";
+import Collabs from "./pages/collabs/Collabs";
+import DealDetail from "./pages/collabs/DealDetail";
+import AddCollab from "./pages/collabs/AddCollab";
+import UploadedCollab from "./pages/collabs/UploadedCollab";
+import Leaderboard from "./pages/dashboard/Leaderboard";
+import Notifications from "./pages/dashboard/Notifications";
+import Settings from "./pages/dashboard/Settings";
+import Earnings from "./pages/dashboard/Earnings";
+import Chat from "./pages/dashboard/Chat";
+import Admin from "./pages/admin/Admin";
+import UgcOrders from "./pages/ugc/UgcOrders";
+import PrivacyPolicy from "./pages/dashboard/PrivacyPolicy";
+import InfoHub from "./pages/dashboard/InfoHub";
+import CreatorCampaignFlow from "./pages/creator/CreatorCampaignFlow";
+import MyProfile from "./pages/profile/MyProfile";
 
 // Brand Specific Pages
-import BrandCampaigns from "./pages/BrandCampaigns";
-import BrandCampaignCreate from "./pages/BrandCampaignCreate";
-import BrandCampaignApplicants from "./pages/BrandCampaignApplicants";
-import BrandInbox from "./pages/BrandInbox";
-import BrandPayments from "./pages/BrandPayments";
-import BrandKyc from "./pages/BrandKyc";
+import BrandCampaigns from "./pages/brand/BrandCampaigns";
+import BrandCampaignCreate from "./pages/brand/BrandCampaignCreate";
+import BrandCampaignApplicants from "./pages/brand/BrandCampaignApplicants";
+import BrandInbox from "./pages/brand/BrandInbox";
+import BrandPayments from "./pages/brand/BrandPayments";
+import BrandKyc from "./pages/brand/BrandKyc";
 
-import PublicUGC from "./pages/PublicUGC";
-import BrandUGCBriefs from "./pages/BrandUGCBriefs";
-import BrandUGCPost from "./pages/BrandUGCPost";
-import BrandUGCOrders from "./pages/BrandUGCOrders";
-import BrandUGCPayments from "./pages/BrandUGCPayments";
-import CreatorUGCBrowse from "./pages/CreatorUGCBrowse";
-import CreatorUGCOrders from "./pages/CreatorUGCOrders";
-import CreatorUGCEarnings from "./pages/CreatorUGCEarnings";
+import PublicUGC from "./pages/ugc/PublicUGC";
+import BrandUGCBriefs from "./pages/brand/BrandUGCBriefs";
+import BrandUGCPost from "./pages/brand/BrandUGCPost";
+import BrandUGCOrders from "./pages/brand/BrandUGCOrders";
+import BrandUGCPayments from "./pages/brand/BrandUGCPayments";
+import CreatorUGCBrowse from "./pages/creator/CreatorUGCBrowse";
+import CreatorUGCOrders from "./pages/creator/CreatorUGCOrders";
+import CreatorUGCEarnings from "./pages/creator/CreatorUGCEarnings";
 
 const BrandConstructionScene = () => (
   <div className="relative w-64 h-64 mx-auto my-6 select-none pointer-events-none drop-shadow-2xl">

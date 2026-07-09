@@ -15,3 +15,13 @@ api.interceptors.request.use((config) => {
 });
 
 export default api;
+
+api.interceptors.response.use(
+  (response) => {
+    if (typeof response.data === 'string' && response.data.trim().startsWith('<')) {
+      return Promise.reject(new Error("Received HTML instead of expected JSON"));
+    }
+    return response;
+  },
+  (error) => Promise.reject(error)
+);

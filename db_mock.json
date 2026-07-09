@@ -323,6 +323,18 @@
       "name": "Alice Creator",
       "email": "alice@example.com",
       "role": "creator"
+    },
+    {
+      "user_id": "user_auto_bodixjba8",
+      "email": "commonuseforpro@gmail.com",
+      "name": "COMMONUSEFORPRO",
+      "role": "creator",
+      "picture": "https://ui-avatars.com/api/?name=commonuseforpro&background=7C3AED&color=fff",
+      "auth_method": "password",
+      "onboarded": true,
+      "created_at": "2026-07-09T13:42:20.117Z",
+      "phone": "9999999999",
+      "password_hash": "mock_hash_1234567890"
     }
   ],
   "user_sessions": [
@@ -331,6 +343,12 @@
       "session_token": "token_7d0qjtj42c6",
       "expires_at": "2026-06-30T06:25:00.320Z",
       "created_at": "2026-06-23T06:25:00.320Z"
+    },
+    {
+      "user_id": "user_auto_bodixjba8",
+      "session_token": "token_g6yc6nmbykf",
+      "expires_at": "2026-07-16T13:42:20.117Z",
+      "created_at": "2026-07-09T13:42:20.117Z"
     }
   ],
   "creator_profiles": [
@@ -1558,6 +1576,26 @@
       "verified": true,
       "status": "approved",
       "profile_views": 20
+    },
+    {
+      "user_id": "user_auto_bodixjba8",
+      "name": "COMMONUSEFORPRO",
+      "email": "commonuseforpro@gmail.com",
+      "photo": "https://ui-avatars.com/api/?name=commonuseforpro&background=7C3AED&color=fff",
+      "picture": "https://ui-avatars.com/api/?name=commonuseforpro&background=7C3AED&color=fff",
+      "bio": "Verified Professional Creator. Highly engaging and reliable content creation.",
+      "category": "Tech",
+      "sub_categories": [
+        "Tech"
+      ],
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "languages": [
+        "English",
+        "Hindi"
+      ],
+      "verified": true,
+      "status": "approved"
     }
   ],
   "brand_profiles": [
@@ -1604,7 +1642,8 @@
       "deliverables": [
         "1 Reel",
         "2 Story mentions"
-      ]
+      ],
+      "views": 1
     },
     {
       "campaign_id": "c2",
@@ -1621,6 +1660,17 @@
           "proposed_amount": 20000,
           "status": "accepted",
           "applied_at": "2026-06-23T06:08:36.839Z"
+        },
+        {
+          "application_id": "app_5ul03pju",
+          "creator_user_id": "user_auto_bodixjba8",
+          "creator_name": "COMMONUSEFORPRO",
+          "proposed_amount": 2000,
+          "pitch": "hey \ni want to apply the new caimpaign to for you ",
+          "status": "pending",
+          "applied_at": "2026-07-09T13:44:32.898Z",
+          "creator_location": "Mumbai, Maharashtra",
+          "due_date": "2026-07-23T13:44:32.898Z"
         }
       ],
       "stage": "Under Review",
@@ -1629,7 +1679,8 @@
       "targetAudience": "Fitness enthusiasts",
       "deliverables": [
         "1 YouTube dedicated review"
-      ]
+      ],
+      "views": 1
     },
     {
       "campaign_id": "c3",
@@ -1916,6 +1967,14 @@
       "kind": "creator",
       "type": "Creator",
       "created_at": "2026-07-03T20:09:23.294Z"
+    },
+    {
+      "id": "v_auto_7gdbi0q",
+      "user_id": "user_auto_bodixjba8",
+      "status": "approved",
+      "kind": "creator",
+      "type": "Creator",
+      "created_at": "2026-07-09T13:43:03.616Z"
     }
   ],
   "waitlist": [
@@ -2040,6 +2099,13 @@
       "message": "Developer Bypass has applied to 'Tech Gadget Review'.",
       "read": false,
       "created_at": "2026-07-03T20:39:26.441Z"
+    },
+    {
+      "notif_id": "notif_fbqodtxql",
+      "type": "NEW_APPLICATION",
+      "message": "COMMONUSEFORPRO has applied to 'Smartwatch Review'.",
+      "read": false,
+      "created_at": "2026-07-09T13:44:32.898Z"
     }
   ],
   "platform_settings": {
@@ -2200,6 +2266,14 @@
       "message_type": "text",
       "content": "Hello Developer Bypass! We've approved your application and prepared the sponsorship agreement for you. Please review the terms and let me know if you are ready to sign or would like to propose a counter offer!",
       "created_at": "2026-07-03T20:39:38.644Z"
+    },
+    {
+      "id": "msg_932x303o",
+      "message_id": "msg_d3avmot7",
+      "thread_id": "thread_k42hb2ed",
+      "sender_role": "brand",
+      "content": "Hi COMMONUSEFORPRO! Thanks for applying to my campaign: 'Smartwatch Review'. I received your pitch: \"hey \ni want to apply the new caimpaign to for you \". Let's discuss details here!",
+      "created_at": "2026-07-09T13:44:32.898Z"
     }
   ],
   "campaign_performance": [],
@@ -2435,6 +2509,24 @@
       "brand_accepted": false,
       "creator_accepted": false,
       "ai_generated_agreement": "**SPONSORSHIP CAMPAIGN AGREEMENT**\n\nThis Sponsorship Campaign Agreement (the \"Agreement\") is entered into and made effective as of May 15, 2026, by and between:\n\n**Nova Brand Co.** (hereinafter referred to as the \"Brand\"), and \n**Developer Bypass** (hereinafter referred to as the \"Creator\"), residing and operating in Mumbai, India.\n\nThe Brand and the Creator may collectively be referred to as the \"Parties\" and individually as a \"Party.\"\n\n---\n\n### 1. Purpose of the Agreement\nThe purpose of this Agreement is to define the terms under which the Creator will produce and publish promotional content for the Brand’s \"Tech Gadget Review\" marketing campaign.\n\n---\n\n### 2. Scope of Work and Deliverables\nThe Creator agrees to develop, produce, and distribute high-quality digital content that aligns with the Brand’s aesthetic and guidelines. The specific deliverables include:\n\n*   **Content Creation:** Production of dedicated promotional content showcasing the key elements of the \"Tech Gadget Review\" campaign.\n*   **Aesthetics and Quality:** All content must maintain a clean, modern, and professional visual aesthetic, consistent with the Brand's style guidelines.\n*   **Brand Integration:** The Creator must clearly tag the official Nova Brand Co. social media account(s) in all campaign posts and include designated campaign hashtags.\n*   **Engagement:** The Creator shall actively monitor and engage with the audience in the comments section of the sponsored posts to maintain high engagement and positive brand sentiment.\n*   **Approval Process:** Drafts of all visual and written materials must be submitted to the Brand for review and written approval prior to public release.\n\n---\n\n### 3. Timeline and Due Date\nTime is of the essence for the execution of this campaign. \n\n*   **Submission for Review:** Drafts must be submitted to the Brand no later than August 17, 2026.\n*   **Final Publication Due Date:** All approved campaign deliverables must be fully published and live on the Creator’s platforms on or before **August 31, 2026**.\n\n---\n\n### 4. Compensation and Payment Terms\nIn consideration for the services rendered and the rights granted herein, the Brand shall compensate the Creator as follows:\n\n*   **Fixed Payment Amount:** The Brand shall pay the Creator a flat fee of **INR 29,400** (Twenty-Nine Thousand Four Hundred Indian Rupees).\n*   **Payment Schedule:** The fixed payment of INR 29,400 will be issued within fourteen (14) business days following the successful completion and publication of all deliverables, subject to the Brand's verification of compliance with Section 2.\n*   **Invoicing:** The Creator must submit a valid invoice to the Brand's finance department upon the successful launch of the campaign content.\n*   **Taxes:** The Creator is solely responsible for any applicable local, state, or federal taxes arising from the receipt of this compensation.\n\n---\n\n### 5. Intellectual Property and Usage Rights\n*   **Ownership:** The Creator retains ownership of the content created under this Agreement.\n*   **Usage License:** The Creator grants Nova Brand Co. a worldwide, royalty-free, perpetual, non-exclusive license to use, share, repost, and adapt the campaign content across the Brand’s official website, social media channels, and digital marketing materials.\n\n---\n\n### 6. Confidentiality\nThe Creator agrees to keep confidential all non-public information shared by the Brand, including but not limited to product launch details, marketing strategies, campaign performance metrics, and the financial terms of this Agreement. This obligation survives the termination of this Agreement.\n\n---\n\n### 7. Governing Law and Jurisdiction\nThis Agreement shall be governed by, interpreted, and construed in accordance with the laws of India. Any disputes arising out of or in connection with this Agreement shall be subject to the exclusive jurisdiction of the courts located in Mumbai, India.\n\n---\n\n### 8. Acceptance of Terms\nBy signing below, both Parties acknowledge that they have read, understood, and agreed to be bound by the terms and conditions outlined in this Agreement.\n\n**For Nova Brand Co. (Brand):**\n\nSignature: ___________________________  \nName: ______________________________  \nTitle: Marketing Manager, Nova Brand Co.  \nDate: _______________________________  \n\n\n**For Developer Bypass (Creator):**\n\nSignature: ___________________________  \nName: ______________________________  \nTitle: Independent Content Creator  \nDate: _______________________________"
+    },
+    {
+      "id": "thread_k42hb2ed",
+      "campaign_id": "c2",
+      "creator_id": "user_auto_bodixjba8",
+      "status": "NEGOTIATING",
+      "created_at": "2026-07-09T13:44:32.898Z",
+      "updated_at": "2026-07-09T13:44:32.898Z",
+      "creator_name": "COMMONUSEFORPRO",
+      "creator_location": "Mumbai, Maharashtra",
+      "due_date": "2026-06-25",
+      "amount_fixed": 2000,
+      "terms_and_conditions": "Deliver high-quality content showcasing key elements of the campaign: \"Smartwatch Review\". Keep aesthetics clean, tag the official brand account, and maintain high engagement.",
+      "campaign_title": "Smartwatch Review",
+      "brand_name": "FitTech",
+      "flow_state": "REQUESTED",
+      "brand_accepted": false,
+      "creator_accepted": false
     }
   ],
   "deal_offers": [

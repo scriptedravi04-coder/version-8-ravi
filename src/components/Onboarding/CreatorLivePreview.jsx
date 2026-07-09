@@ -71,7 +71,7 @@ export default function CreatorLivePreview({ formData, currentStep, user }) {
             <img
               src={formData.photoUrl || '/avatar2.png'}
               alt="Avatar"
-              className="-mt-12 w-20 h-20 rounded-full border-[3px] border-[#1a1a2e] object-cover bg-[#2a2a3b] shadow-lg mb-3"
+              className="-mt-12 w-20 h-20 rounded-full border-[3px] border-[var(--bg-card)] object-cover bg-[var(--bg-elevated)] shadow-lg mb-3"
             />
             
             <div className="space-y-4">

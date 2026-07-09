@@ -253,7 +253,7 @@ export default function Chat() {
             {restrictionMessage || "Please apply to at least one campaign to unlock your chat and inbox section!"}
           </p>
 
-          <Link to="/explore" className="px-6 py-3.5 bg-[var(--violet)] hover:bg-[#6b3deb] text-white font-bold rounded-xl transition-all flex items-center gap-2 shadow-lg hover:scale-105 transform duration-200">
+          <Link to="/campaigns" className="px-6 py-3.5 bg-[var(--violet)] hover:bg-[#6b3deb] text-white font-bold rounded-xl transition-all flex items-center gap-2 shadow-lg hover:scale-105 transform duration-200">
              Explore Campaigns &rarr;
           </Link>
         </div>

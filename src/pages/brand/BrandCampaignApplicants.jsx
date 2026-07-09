@@ -3,7 +3,7 @@ import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import { api } from "../../lib/api";
 import { toast } from "sonner";
 import ApplicantCard from "../../components/campaigns/ApplicantCard";
-import { ArrowLeft, Megaphone, Users, HelpCircle, Check, Sparkles } from "lucide-react";
+import { ArrowLeft, Megaphone, Users, HelpCircle, Check, Sparkles, Loader2 } from "lucide-react";
 
 export default function BrandCampaignApplicants() {
   const { id } = useParams();
@@ -13,6 +13,20 @@ export default function BrandCampaignApplicants() {
   const [campaign, setCampaign] = useState(location.state?.campaign || null);
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [aiRoi, setAiRoi] = useState(null);
+  const [isPredictingRoi, setIsPredictingRoi] = useState(false);
+
+  const handlePredictRoi = async () => {
+    setIsPredictingRoi(true);
+    try {
+      const { data } = await api.post("/ai/predict-roi", { campaign, creators: applicants });
+      setAiRoi(data);
+    } catch (e) {
+      toast.error("Failed to predict ROI");
+    } finally {
+      setIsPredictingRoi(false);
+    }
+  };
 
   const loadData = async () => {
     try {
@@ -146,6 +160,42 @@ export default function BrandCampaignApplicants() {
         </div>
       </div>
 
+      
+
+      <div className="mt-6 mb-8 pt-6 border-t border-[var(--border-default)]">
+        <h4 className="font-bold text-sm text-[var(--text-primary)] mb-3 flex items-center gap-2">
+          <Sparkles size={16} className="text-[var(--violet)]" />
+          Predictive AI ROI
+        </h4>
+        {aiRoi ? (
+          <div className="bg-[var(--bg-elevated)] p-4 rounded-xl border border-[var(--border-default)]">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-xs text-[var(--text-secondary)]">Est. Reach</span>
+              <span className="text-sm font-bold text-[var(--text-primary)]">{aiRoi.estimatedReach?.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-xs text-[var(--text-secondary)]">Est. Engagement</span>
+              <span className="text-sm font-bold text-[var(--text-primary)]">{aiRoi.estimatedEngagement?.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-xs text-[var(--text-secondary)]">ROI Multiplier</span>
+              <span className="text-sm font-black text-emerald-500">{aiRoi.roiMultiplier}x</span>
+            </div>
+            <p className="text-xs text-[var(--text-secondary)] italic leading-relaxed">{aiRoi.analysis}</p>
+          </div>
+        ) : (
+          <button 
+            onClick={handlePredictRoi}
+            disabled={isPredictingRoi}
+            className="w-full py-3 bg-[var(--violet)]/10 text-[#7C5CFF] border border-[#7C5CFF]/30 hover:bg-[#7C5CFF]/20 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2"
+          >
+            {isPredictingRoi ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
+            Predict ROI for Applicant Pool
+          </button>
+        )}
+      </div>
+
+
       <div className="grid grid-cols-1 gap-5">
         {applicants.length === 0 ? (
           <div className="bg-[var(--bg-card)] border border-[var(--border-default)] rounded-3xl p-16 text-center max-w-2xl mx-auto flex flex-col items-center justify-center">
@@ -160,7 +210,7 @@ export default function BrandCampaignApplicants() {
         ) : (
           applicants.map((app) => (
             <ApplicantCard
-              key={app.application_id || app.id}
+              key={(app.application_id || app.id) ? (app.application_id || app.id) + "-" + index : index}
               applicant={app}
               onShortlist={handleShortlist}
               onReject={handleReject}

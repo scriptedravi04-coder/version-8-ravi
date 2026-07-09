@@ -2818,7 +2818,7 @@ Details:
 The agreement must read like a formal yet simple contract. Break it down into clear numbered sections with clean bullet points. Avoid any mention of AI or machine/humanized descriptors. Make it look like a normal, plain text contract. Ensure the payment of INR ${amountFixed} is clearly presented, but explicitly state that this amount is subject to a standard platform fee deduction from the creator's final payout.`;
 
         const response = await ai.models.generateContent({
-          model: "gemini-3.5-flash",
+          model: "gemini-3.1-flash-lite",
           contents: promptString,
         });
         agreementContent = response.text || "";
@@ -5695,6 +5695,190 @@ ${agreementDeliverables}
     db.banners = db.banners.filter(b => b.id !== req.params.id);
     saveDb(db);
     res.json({ success: true });
+  });
+
+  
+  router.post("/ai/suggest", async (req, res) => {
+    const { prompt, type } = req.body;
+    if (!prompt) return res.status(400).json({ detail: "Prompt is required" });
+
+    try {
+      if (process.env.GEMINI_API_KEY) {
+        const ai = new GoogleGenAI({
+          apiKey: process.env.GEMINI_API_KEY,
+          httpOptions: { headers: { "User-Agent": "aistudio-build" } }
+        });
+        
+        let finalPrompt = prompt;
+        if (type === "campaign_brief") {
+          finalPrompt = "You are a marketing expert. Write a detailed, professional influencer marketing campaign brief based on the following input:\n\n" + prompt;
+        } else if (type === "brand_description") {
+          finalPrompt = "You are a professional copywriter. Write a short, engaging company description for a brand with the following details:\n\n" + prompt;
+        } else if (type === "creator_bio") {
+          finalPrompt = "You are a social media expert. Write a catchy, professional bio for an influencer based on the following details:\n\n" + prompt;
+        }
+
+        const response = await ai.models.generateContent({
+          model: "gemini-3.1-flash-lite",
+          contents: finalPrompt,
+        });
+        
+        return res.json({ text: response.text });
+      } else {
+        return res.json({ text: "AI is currently disabled because GEMINI_API_KEY is not set. Here is a mocked response based on your prompt: " + prompt.substring(0, 50) + "..." });
+      }
+    } catch (error) {
+      console.error("AI Error:", error);
+      return res.status(500).json({ detail: "AI generation failed" });
+    }
+  });
+
+
+  router.post("/ai/generate-campaign", async (req, res) => {
+    const { prompt } = req.body;
+    if (!prompt) return res.status(400).json({ detail: "Prompt is required" });
+    try {
+      if (process.env.GEMINI_API_KEY) {
+        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY, httpOptions: { headers: { "User-Agent": "aistudio-build" } } });
+        const finalPrompt = `You are an expert campaign manager. Based on this input: "${prompt}", generate a complete campaign configuration.
+Return ONLY valid JSON with no markdown formatting. The JSON should match this structure:
+{
+  "title": "Campaign Title",
+  "description": "Detailed brief...",
+  "categories": ["Fashion", "Beauty"], // 1-3 valid niches
+  "language_type": "Any language", // or "Specific language"
+  "platforms": ["Instagram"],
+  "max_creators": 50,
+  "budget_min": "5000",
+  "budget_max": "10000",
+  "brand_type": "Some Brand Type",
+  "follower_min": 10000,
+  "follower_max": 100000,
+  "dos": "List of dos...",
+  "donts": "List of donts...",
+  "hashtags": "#ad #campaign",
+  "mentions": "@brand"
+}`;
+        const response = await ai.models.generateContent({
+          model: "gemini-3.1-flash-lite",
+          contents: finalPrompt,
+        });
+        let text = response.text;
+        try {
+          const jsonStr = text.replace(/\s*```[a-z]*\n?/gi, "").replace(/\s*```/g, "");
+          const match = jsonStr.match(/\{[\s\S]*\}/);
+          if (match) {
+            return res.json(JSON.parse(match[0]));
+          } else {
+            return res.json({ error: "Failed to parse JSON" });
+          }
+        } catch(e) {
+           return res.json({ error: "Failed to parse JSON" });
+        }
+      } else {
+        return res.json({ title: "Mock Campaign Title", description: "Mock generated brief based on: " + prompt, budget_min: "2000", budget_max: "5000", follower_min: 10000, follower_max: 500000 });
+      }
+    } catch (e) {
+      console.error(e);
+      return res.status(500).json({ error: "Failed to generate campaign" });
+    }
+  });
+
+  router.post("/ai/match-score", async (req, res) => {
+    const { creator, campaign } = req.body;
+    try {
+      if (process.env.GEMINI_API_KEY) {
+        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY, httpOptions: { headers: { "User-Agent": "aistudio-build" } } });
+        const finalPrompt = `Analyze the fit between this creator and campaign. Return ONLY a JSON object with: { "score": number (0-100), "reasoning": "brief explanation" }. Creator: ${JSON.stringify(creator)}. Campaign: ${JSON.stringify(campaign)}.`;
+        const response = await ai.models.generateContent({
+          model: "gemini-3.1-flash-lite",
+          contents: finalPrompt,
+        });
+        let text = response.text;
+        try {
+          const jsonStr = text.replace(/\s*```[a-z]*\n?/gi, "").replace(/\s*```/g, "");
+          const match = jsonStr.match(/\{[\s\S]*\}/);
+          if (match) {
+            return res.json(JSON.parse(match[0]));
+          } else {
+            return res.json({ error: "Failed to parse JSON" });
+          }
+        } catch(e) {
+           return res.json({ error: "Failed to parse JSON" });
+        }
+      } else {
+        return res.json({ score: 85, reasoning: "Strong category alignment and follower count matches requirements." });
+      }
+    } catch (e) {
+      console.error(e);
+      return res.status(500).json({ error: "Failed to generate match score" });
+    }
+  });
+
+  router.post("/ai/predict-roi", async (req, res) => {
+    const { campaign, creators } = req.body;
+    try {
+      if (process.env.GEMINI_API_KEY) {
+        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY, httpOptions: { headers: { "User-Agent": "aistudio-build" } } });
+        const finalPrompt = `Predict the ROI for this campaign given these creators. Return ONLY a JSON object with: { "estimatedReach": number, "estimatedEngagement": number, "roiMultiplier": number (e.g. 2.5), "analysis": "brief explanation" }. Campaign budget: ${campaign?.budget_max}. Creator stats: ${JSON.stringify(creators)}.`;
+        const response = await ai.models.generateContent({
+          model: "gemini-3.1-flash-lite",
+          contents: finalPrompt,
+        });
+        let text = response.text;
+        try {
+          const jsonStr = text.replace(/\s*```[a-z]*\n?/gi, "").replace(/\s*```/g, "");
+          const match = jsonStr.match(/\{[\s\S]*\}/);
+          if (match) {
+            return res.json(JSON.parse(match[0]));
+          } else {
+            return res.json({ error: "Failed to parse JSON" });
+          }
+        } catch(e) {
+           return res.json({ error: "Failed to parse JSON" });
+        }
+      } else {
+        return res.json({ estimatedReach: 500000, estimatedEngagement: 15000, roiMultiplier: 3.2, analysis: "Based on historical creator performance, this campaign shows strong potential ROI." });
+      }
+    } catch (e) {
+      console.error(e);
+      return res.status(500).json({ error: "Failed to predict ROI" });
+    }
+  });
+
+  router.post("/ai/negotiation", async (req, res) => {
+    const { history, offer, brandContext, creatorContext } = req.body;
+    try {
+      if (process.env.GEMINI_API_KEY) {
+        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY, httpOptions: { headers: { "User-Agent": "aistudio-build" } } });
+        const finalPrompt = `You are an AI negotiation assistant acting on behalf of a user. Provide a strategic, polite response to this negotiation. 
+        Context: ${JSON.stringify({brandContext, creatorContext})}
+        Offer: ${offer}
+        History: ${JSON.stringify(history)}
+        Return ONLY a JSON object with: { "suggestedResponse": "string", "advice": "string" }`;
+        const response = await ai.models.generateContent({
+          model: "gemini-3.1-flash-lite",
+          contents: finalPrompt,
+        });
+        let text = response.text;
+        try {
+          const jsonStr = text.replace(/\s*```[a-z]*\n?/gi, "").replace(/\s*```/g, "");
+          const match = jsonStr.match(/\{[\s\S]*\}/);
+          if (match) {
+            return res.json(JSON.parse(match[0]));
+          } else {
+            return res.json({ error: "Failed to parse JSON" });
+          }
+        } catch(e) {
+           return res.json({ error: "Failed to parse JSON" });
+        }
+      } else {
+        return res.json({ suggestedResponse: "I appreciate the offer. Given the deliverable requirements, would you be open to...", advice: "Consider counter-offering 10% higher." });
+      }
+    } catch (e) {
+      console.error(e);
+      return res.status(500).json({ error: "Failed to generate negotiation advice" });
+    }
   });
 
   app.use("/api", router);

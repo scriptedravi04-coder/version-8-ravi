@@ -261,15 +261,15 @@ export default function Dashboard() {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-    navigate(`/explore?q=${encodeURIComponent(searchQuery)}`);
+    navigate(`/creators?q=${encodeURIComponent(searchQuery)}`);
   };
 
   const handleCategoryClick = (catName) => {
-    navigate(`/explore?category=${encodeURIComponent(catName)}`);
+    navigate(`/creators?category=${encodeURIComponent(catName)}`);
   };
 
   const handleCityClick = (cityName) => {
-    navigate(`/explore?city=${encodeURIComponent(cityName)}`);
+    navigate(`/creators?city=${encodeURIComponent(cityName)}`);
   };
 
   const startChatWithCreator = (creatorId) => {
@@ -293,7 +293,12 @@ export default function Dashboard() {
     return [...displayCreators].reverse().slice(0, 4);
   }, [displayCreators]);
 
-  const heroBanners = banners.filter(b => b.placement === "Dashboard Hero Carousel" && b.status === "Live" && b.type === (user?.role === "creator" ? "Influencer" : "Brand")).slice(0, 3);
+  const isNewUser = !user?.kyc_verified || !user?.bank_details_added;
+  const heroBanners = banners.filter(b => 
+    b.placement === "Dashboard Hero Carousel" && 
+    b.status === "Live" && 
+    b.type === (isNewUser ? "Common" : (user?.role === "creator" ? "Influencer" : "Brand"))
+  ).slice(0, 5);
 
   useEffect(() => {
     if (heroBanners.length <= 1) return;
@@ -435,7 +440,7 @@ export default function Dashboard() {
         {/* DOUBLE BUTTON PILL HERO SECTION (Custom Styled with UGC action choice embedded!) */}
         <div className="mt-8 bg-[var(--bg-surface)] border border-[var(--border-default)] hover:border-[var(--border-strong)] p-1.5 rounded-2xl flex flex-col sm:flex-row gap-2 max-w-lg w-full backdrop-blur-md shadow-2xl transition-all duration-300">
           <Link 
-            to="/explore"
+            to="/creators"
             className="flex-1 filter hover:brightness-110 flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-indigo-600 text-[var(--text-primary)] text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all transform hover:scale-[1.01]"
           >
             <Search size={14} /> Browse Creators
@@ -555,7 +560,7 @@ export default function Dashboard() {
             <h2 className="text-xl font-bold font-display tracking-tight text-[var(--text-primary)]">Creator categories</h2>
             <p className="text-xs text-[var(--text-secondary)]">And 140+ sub-categories, inside</p>
           </div>
-          <Link to="/explore" className="text-xs font-bold text-[#D9F111] flex items-center gap-1 group">
+          <Link to="/creators" className="text-xs font-bold text-[#D9F111] flex items-center gap-1 group">
             View all <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
@@ -608,7 +613,7 @@ export default function Dashboard() {
             <h2 className="text-xl font-bold font-display tracking-tight text-[var(--text-primary)]">Brands recently connected with</h2>
             <p className="text-xs text-[var(--text-secondary)]">Most popular collaborative experts on Ybex</p>
           </div>
-          <Link to="/explore" className="text-xs font-bold text-[#D9F111] flex items-center gap-1 group">
+          <Link to="/creators" className="text-xs font-bold text-[#D9F111] flex items-center gap-1 group">
             View all <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
@@ -679,7 +684,7 @@ export default function Dashboard() {
             <h2 className="text-xl font-bold font-display tracking-tight text-[var(--text-primary)]">Pocket friendly creators</h2>
             <p className="text-xs text-[var(--text-secondary)]">Suitable, vetted creators perfect for scaling with budgets</p>
           </div>
-          <Link to="/explore" className="text-xs font-bold text-[#D9F111] flex items-center gap-1 group">
+          <Link to="/creators" className="text-xs font-bold text-[#D9F111] flex items-center gap-1 group">
             View all <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
@@ -714,7 +719,7 @@ export default function Dashboard() {
             <h2 className="text-xl font-bold font-display tracking-tight text-[var(--text-primary)]">Creators by location</h2>
             <p className="text-xs text-[var(--text-secondary)]">Find regional experts across 1600+ cities</p>
           </div>
-          <Link to="/explore" className="text-xs font-bold text-[#D9F111] flex items-center gap-1 group">
+          <Link to="/creators" className="text-xs font-bold text-[#D9F111] flex items-center gap-1 group">
             View all cities <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
@@ -754,7 +759,7 @@ export default function Dashboard() {
           ].map((item, idx) => (
             <div 
               key={idx} 
-              onClick={() => navigate(`/explore?q=${encodeURIComponent(item.name)}`)}
+              onClick={() => navigate(`/creators?q=${encodeURIComponent(item.name)}`)}
               className={`p-5 rounded-2xl border ${item.tone} hover:brightness-110 cursor-pointer flex flex-col justify-between h-28 transform hover:scale-[1.02] transition-all`}
             >
               <span className="text-3xl">{item.emoji}</span>

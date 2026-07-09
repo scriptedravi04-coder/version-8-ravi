@@ -23,12 +23,12 @@ export default function ScanningAnimation({
   }, [onComplete]);
 
   return (
-    <div className="bg-[#1a1b26] border border-[#565f89]/30 rounded-xl p-4 font-mono text-xs">
-      <div className="flex items-center gap-2 text-[#7aa2f7] mb-3">
+    <div className="bg-[var(--bg-base)] border border-[var(--border-default)] rounded-xl p-4 font-mono text-xs">
+      <div className="flex items-center gap-2 text-[#3B82F6] mb-3">
         <Loader2 size={14} className="animate-spin" />
         <span>SCANNING PROFILE METRICS...</span>
       </div>
-      <div className="space-y-2 text-[#c0caf5]">
+      <div className="space-y-2 text-[var(--text-primary)]">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: step >= 1 ? 1 : 0 }}

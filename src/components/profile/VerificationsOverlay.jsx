@@ -52,7 +52,7 @@ export default function VerificationsOverlay() {
         let prof = null;
         if (user.role === "creator") {
           try {
-            const { data } = await api.get(`/creators/${user.id}`);
+            const { data } = await api.get(`/creators/${user.user_id}`);
             prof = data;
           } catch (e) {
             console.warn("Could not load creator profile", e);

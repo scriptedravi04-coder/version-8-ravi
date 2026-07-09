@@ -18,13 +18,7 @@ import CreatorProfile from "./pages/creator/CreatorProfile";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Campaigns from "./pages/campaigns/Campaigns";
 
-function ExploreWrapper() {
-  const { user } = useAuth();
-  if (user?.role === 'brand') {
-    return <Explore />;
-  }
-  return <Campaigns />;
-}
+
 import CampaignDetail from "./pages/campaigns/CampaignDetail";
 import Collabs from "./pages/collabs/Collabs";
 import DealDetail from "./pages/collabs/DealDetail";
@@ -194,7 +188,7 @@ function AnimatedRoutes() {
         <Route path="/login" element={<Layout><Page><Login /></Page></Layout>} />
         <Route path="/signup" element={<Layout><Page><Signup /></Page></Layout>} />
         <Route path="/onboarding" element={<ProtectedRoute><Layout><Page><Onboarding /></Page></Layout></ProtectedRoute>} />
-        <Route path="/explore" element={<Layout><Page><ExploreWrapper /></Page></Layout>} />
+        <Route path="/creators" element={<Layout><Page><Explore /></Page></Layout>} />
         <Route path="/creator/:id" element={<Layout><Page><CreatorProfile /></Page></Layout>} />
         <Route path="/profile/overview" element={<ProtectedRoute><Layout><Page><MyProfile /></Page></Layout></ProtectedRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute requireOnboarded><Layout><Page><Dashboard /></Page></Layout></ProtectedRoute>} />

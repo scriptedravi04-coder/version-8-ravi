@@ -165,9 +165,9 @@ export default function BrandCampaigns() {
                 No campaigns match selected status filter &ldquo;{activeTab}&rdquo;.
               </div>
             ) : (
-              filtered.map((camp) => (
+              filtered.map((camp, index) => (
                 <CampaignCard 
-                  key={camp.campaign_id || camp.id} 
+                  key={(camp.campaign_id || camp.id) ? (camp.campaign_id || camp.id) + "-" + index : index} 
                   campaign={camp}
                   onManage={handleManage}
                   onEdit={handleEdit}

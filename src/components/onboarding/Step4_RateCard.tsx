@@ -84,10 +84,10 @@ export default function Step4_RateCard({
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500 pb-20">
       <div>
-        <h2 className="text-3xl font-bold text-[#c0caf5]">
+        <h2 className="text-3xl font-bold text-[var(--text-primary)]">
           Rate Card & Commercials
         </h2>
-        <p className="text-[#565f89] mt-2">
+        <p className="text-[var(--text-secondary)] mt-2">
           Determine what campaigns you're open to & specify baseline pricing
           quotes.
         </p>
@@ -95,16 +95,16 @@ export default function Step4_RateCard({
 
       <div className="space-y-6">
         <div>
-          <label className="block text-[11px] font-black text-[#565f89] mb-2 uppercase tracking-widest">
+          <label className="block text-[11px] font-black text-[var(--text-secondary)] mb-2 uppercase tracking-widest">
             $ Standard Platform Quotes (INR ₹)
           </label>
-          <div className="space-y-4 bg-[#24283b] p-5 border border-[#565f89]/30 rounded-2xl">
+          <div className="space-y-4 bg-[var(--bg-card)] p-5 border border-[var(--border-default)] rounded-2xl">
             <div>
-              <label className="block text-xs font-bold text-[#c0caf5] mb-2 uppercase">
+              <label className="block text-xs font-bold text-[var(--text-primary)] mb-2 uppercase">
                 Instagram Reel *
               </label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#565f89] font-bold">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] font-bold">
                   ₹
                 </span>
                 <input
@@ -116,7 +116,7 @@ export default function Step4_RateCard({
                       e.target.value === "" ? "" : parseInt(e.target.value),
                     )
                   }
-                  className="w-full bg-[#1a1b26] border border-[#565f89]/50 rounded-xl p-4 pl-8 text-[#c0caf5] focus:border-[#7aa2f7] outline-none"
+                  className="w-full bg-[var(--bg-base)] border border-[var(--border-default)] rounded-xl p-4 pl-8 text-[var(--text-primary)] focus:border-[#3B82F6] outline-none"
                 />
               </div>
               {reelValidation && (
@@ -129,11 +129,11 @@ export default function Step4_RateCard({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#c0caf5] mb-2 uppercase">
+              <label className="block text-xs font-bold text-[var(--text-primary)] mb-2 uppercase">
                 Instagram Story *
               </label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#565f89] font-bold">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] font-bold">
                   ₹
                 </span>
                 <input
@@ -145,7 +145,7 @@ export default function Step4_RateCard({
                       e.target.value === "" ? "" : parseInt(e.target.value),
                     )
                   }
-                  className="w-full bg-[#1a1b26] border border-[#565f89]/50 rounded-xl p-4 pl-8 text-[#c0caf5] focus:border-[#7aa2f7] outline-none"
+                  className="w-full bg-[var(--bg-base)] border border-[var(--border-default)] rounded-xl p-4 pl-8 text-[var(--text-primary)] focus:border-[#3B82F6] outline-none"
                 />
               </div>
               {storyValidation && (
@@ -159,11 +159,11 @@ export default function Step4_RateCard({
 
             {youtubeConnected && (
               <div>
-                <label className="block text-xs font-bold text-[#c0caf5] mb-2 uppercase">
+                <label className="block text-xs font-bold text-[var(--text-primary)] mb-2 uppercase">
                   YouTube Video *
                 </label>
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#565f89] font-bold">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] font-bold">
                     ₹
                   </span>
                   <input
@@ -175,7 +175,7 @@ export default function Step4_RateCard({
                         e.target.value === "" ? "" : parseInt(e.target.value),
                       )
                     }
-                    className="w-full bg-[#1a1b26] border border-[#565f89]/50 rounded-xl p-4 pl-8 text-[#c0caf5] focus:border-[#7aa2f7] outline-none"
+                    className="w-full bg-[var(--bg-base)] border border-[var(--border-default)] rounded-xl p-4 pl-8 text-[var(--text-primary)] focus:border-[#3B82F6] outline-none"
                   />
                 </div>
                 {ytValidation && (
@@ -191,7 +191,7 @@ export default function Step4_RateCard({
         </div>
 
         <div>
-          <label className="block text-[11px] font-black text-[#565f89] mb-2 uppercase tracking-widest">
+          <label className="block text-[11px] font-black text-[var(--text-secondary)] mb-2 uppercase tracking-widest">
             Barter Acceptability Mode
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -199,17 +199,17 @@ export default function Step4_RateCard({
               <button
                 key={mode.id}
                 onClick={() => updateField("barterMode", mode.id as any)}
-                className={`p-4 rounded-xl text-left flex flex-col gap-1 border transition-all ${barterMode === mode.id ? "bg-[#7aa2f7]/10 border-[#7aa2f7] shadow-[0_0_15px_rgba(122,162,247,0.15)]" : "bg-[#24283b] border-[#565f89]/30 hover:border-[#7aa2f7]/50"}`}
+                className={`p-4 rounded-xl text-left flex flex-col gap-1 border transition-all ${barterMode === mode.id ? "bg-[#3B82F6]/10 border-[#3B82F6] shadow-[0_0_15px_rgba(122,162,247,0.15)]" : "bg-[var(--bg-card)] border-[var(--border-default)] hover:border-[#3B82F6]/50"}`}
               >
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-xl">{mode.icon}</span>
                   <span
-                    className={`text-sm font-bold ${barterMode === mode.id ? "text-[#c0caf5]" : "text-[#565f89]"}`}
+                    className={`text-sm font-bold ${barterMode === mode.id ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)]"}`}
                   >
                     {mode.title}
                   </span>
                 </div>
-                <span className="text-[10px] text-[#565f89] font-medium leading-relaxed">
+                <span className="text-[10px] text-[var(--text-secondary)] font-medium leading-relaxed">
                   {mode.desc}
                 </span>
               </button>
@@ -217,7 +217,7 @@ export default function Step4_RateCard({
           </div>
         </div>
 
-        <div className="bg-[#9ece6a]/10 border border-[#9ece6a]/20 p-4 rounded-xl flex items-start gap-4 text-xs text-[#c0caf5] leading-relaxed">
+        <div className="bg-[#9ece6a]/10 border border-[#9ece6a]/20 p-4 rounded-xl flex items-start gap-4 text-xs text-[var(--text-primary)] leading-relaxed">
           <div className="w-10 h-10 rounded-full bg-[#9ece6a]/20 flex items-center justify-center shrink-0">
             <Shield className="text-[#9ece6a]" size={18} />
           </div>
@@ -232,17 +232,17 @@ export default function Step4_RateCard({
         </div>
       </div>
 
-      <div className="flex justify-between pt-6 border-t border-[#565f89]/20">
+      <div className="flex justify-between pt-6 border-t border-[var(--border-default)]">
         <button
           onClick={prevStep}
-          className="text-[#565f89] hover:text-[#c0caf5] font-medium px-4 py-3 transition"
+          className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-medium px-4 py-3 transition"
         >
           ← Back
         </button>
         <button
           onClick={onSubmit}
           disabled={!isComplete}
-          className="bg-[#7aa2f7] text-[#1a1b26] font-bold py-3 px-8 rounded-xl hover:bg-[#6b91e5] transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-[#3B82F6] text-white font-bold py-3 px-8 rounded-xl hover:bg-[#6b91e5] transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Submit Profile →
         </button>

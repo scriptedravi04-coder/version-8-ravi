@@ -2106,6 +2106,21 @@
       "message": "COMMONUSEFORPRO has applied to 'Smartwatch Review'.",
       "read": false,
       "created_at": "2026-07-09T13:44:32.898Z"
+    },
+    {
+      "notif_id": "notif_ivgxrvqqx",
+      "user_id": "dev-brand-id-12345",
+      "type": "UGC_READY",
+      "message": "✅ Quality check complete! Your UGC video is ready for review.",
+      "read": false,
+      "created_at": "2026-07-09T14:55:00.021Z"
+    },
+    {
+      "notif_id": "notif_abmiv96yi",
+      "type": "UGC_CANCELLED_REFUND",
+      "message": "Unfortunately your UGC order could not be fulfilled in time. Full refund initiated.",
+      "read": false,
+      "created_at": "2026-07-09T14:55:01.104Z"
     }
   ],
   "platform_settings": {
@@ -2340,12 +2355,14 @@
         "claimed_count": 1,
         "max_creators": 1
       },
-      "brand_status": "IN_PROGRESS",
-      "creator_status": "CLAIMED",
+      "brand_status": "CANCELLED",
+      "creator_status": "CANCELLED",
       "creator_payout": 3300,
       "agreed_amount": 3500,
       "internal_deadline": "2026-07-04T19:49:40.337Z",
-      "created_at": "2026-07-03T19:49:40.337Z"
+      "created_at": "2026-07-03T19:49:40.337Z",
+      "alert_22hr_sent": true,
+      "payment_status": "REFUNDED"
     },
     {
       "id": "ugcorder_zrdriq3zt",
@@ -2355,7 +2372,7 @@
       "claimed_at": "2026-07-03T20:00:54.783Z",
       "internal_deadline": "2026-07-04T18:00:54.783Z",
       "creator_status": "DELIVERED",
-      "brand_status": "QUALITY_REVIEW",
+      "brand_status": "DELIVERED",
       "agreed_amount": 3000,
       "platform_fee_percent": 5,
       "platform_fee_amount": 150,
@@ -2694,7 +2711,7 @@
         "Show other brands"
       ],
       "status": "IN_PROGRESS",
-      "claimed_count": 1,
+      "claimed_count": 0,
       "max_creators": 1
     },
     {

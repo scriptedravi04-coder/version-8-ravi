@@ -23,6 +23,21 @@ export default function CampaignDetail() {
   const [amount, setAmount] = useState(0);
   
   const [applying, setApplying] = useState(false);
+  const [aiRoi, setAiRoi] = useState(null);
+  const [isPredictingRoi, setIsPredictingRoi] = useState(false);
+
+  const handlePredictRoi = async () => {
+    setIsPredictingRoi(true);
+    try {
+      const { data } = await api.post("/ai/predict-roi", { campaign: c, creators: [] });
+      setAiRoi(data);
+    } catch (e) {
+      // toast.error("Failed to predict ROI");
+    } finally {
+      setIsPredictingRoi(false);
+    }
+  };
+
   const [applyModalOpen, setApplyModalOpen] = useState(false);
   const [creatorProfile, setCreatorProfile] = useState(null);
 
@@ -36,7 +51,7 @@ export default function CampaignDetail() {
 
   useEffect(() => {
     if (user && user.role === 'creator') {
-      api.get(`/creators/${user.id}`)
+      api.get(`/creators/${user.user_id}`)
         .then(({ data }) => setCreatorProfile(data))
         .catch((e) => console.warn('Failed to load creator profile', e));
     }
@@ -324,6 +339,42 @@ export default function CampaignDetail() {
                 </span>
               </div>
             </div>
+  
+            {user?.role === "brand" && (
+              <div className="mt-6 pt-6 border-t border-[var(--border-default)]">
+                <h4 className="font-bold text-sm text-[var(--text-primary)] mb-3 flex items-center gap-2">
+                  <Sparkles size={16} className="text-[var(--violet)]" />
+                  Predictive AI ROI
+                </h4>
+                {aiRoi ? (
+                  <div className="bg-[var(--bg-elevated)] p-4 rounded-xl border border-[var(--border-default)]">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-xs text-[var(--text-secondary)]">Est. Reach</span>
+                      <span className="text-sm font-bold text-[var(--text-primary)]">{aiRoi.estimatedReach?.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-xs text-[var(--text-secondary)]">Est. Engagement</span>
+                      <span className="text-sm font-bold text-[var(--text-primary)]">{aiRoi.estimatedEngagement?.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-xs text-[var(--text-secondary)]">ROI Multiplier</span>
+                      <span className="text-sm font-black text-emerald-500">{aiRoi.roiMultiplier}x</span>
+                    </div>
+                    <p className="text-xs text-[var(--text-secondary)] italic leading-relaxed">{aiRoi.analysis}</p>
+                  </div>
+                ) : (
+                  <button 
+                    onClick={handlePredictRoi}
+                    disabled={isPredictingRoi}
+                    className="w-full py-3 bg-[var(--bg-elevated)] border border-[var(--violet)]/20 hover:border-[var(--violet)]/50 text-[var(--violet)] font-bold rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
+                  >
+                    {isPredictingRoi ? <Loader2 size={16} className="animate-spin" /> : <BarChart2 size={16} />}
+                    Run ROI Prediction
+                  </button>
+                )}
+              </div>
+            )}
+
             
             {user?.role === 'creator' ? (
               <>
@@ -350,8 +401,11 @@ export default function CampaignDetail() {
                 </button>
               </>
             ) : (
-              <div className="p-4 bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-xl text-sm text-[var(--text-secondary)] mb-6 text-center">
-                Sign in as a creator to apply for this campaign.
+              <div className="p-5 bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-xl mb-6 text-center flex flex-col items-center justify-center gap-3 shadow-sm">
+                <p className="text-sm font-medium text-[var(--text-secondary)]">Sign in as a creator to apply for this campaign.</p>
+                <Link to="/login?role=creator" className="px-6 py-2.5 bg-[var(--violet)] text-white text-sm font-bold rounded-xl hover:bg-opacity-90 transition-all flex items-center justify-center gap-2">
+                  Sign In to Apply
+                </Link>
               </div>
             )}
           </div>

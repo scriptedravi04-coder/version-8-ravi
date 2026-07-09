@@ -19,8 +19,7 @@ export const INDIAN_CITIES = [
   "Kolhapur", "Ajmer", "Akola", "Gulbarga", "Jamnagar",
   "Ujjain", "Loni", "Siliguri", "Jhansi", "Ulhasnagar",
   "Jammu", "Sangli-Miraj & Kupwad", "Mangalore", "Erode", "Belgaum",
-  "Ambattur", "Tirunelveli", "Malegaon", "Gaya", "Jalgaon",
-  "Udaipur", "Maheshtala", "Davanagere", "Kozhikode", "Akbarpur"
+  "Ambattur", "Tirunelveli", "Malegaon", "Gaya", "Udaipur", "Maheshtala", "Davanagere", "Kozhikode", "Akbarpur"
 ];
 
 export const VALID_NICHES = [

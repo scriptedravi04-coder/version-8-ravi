@@ -113,7 +113,7 @@ export default function CreatorDashboard({ user }) {
         title: 'Apply to a Campaign',
         desc: 'You have not applied for any campaigns yet. Start earning by applying to your first campaign!', 
         btnText: 'Explore',
-        link: '/explore' 
+        link: '/campaigns' 
       });
     }
     return tasks.slice(0, 5);
@@ -200,7 +200,12 @@ export default function CreatorDashboard({ user }) {
     return () => { mounted = false; clearInterval(syncInterval); };
   }, [user]);
 
-  const heroBanners = banners.filter(b => b.placement === "Dashboard Hero Carousel" && b.status === "Live" && b.type === "Influencer").slice(0, 3);
+  const isNewUser = !user?.kyc_verified || !user?.bank_details_added;
+  const heroBanners = banners.filter(b => 
+    b.placement === "Dashboard Hero Carousel" && 
+    b.status === "Live" && 
+    b.type === (isNewUser ? "Common" : "Influencer")
+  ).slice(0, 5);
 
   useEffect(() => {
     if (heroBanners.length <= 1) return;
@@ -318,7 +323,7 @@ export default function CreatorDashboard({ user }) {
                    Top brands. Real budgets. Right creators.
                  </p>
 
-                 <Link to="/explore" className="bg-[var(--violet)] hover:bg-[#6b3deb] text-[var(--text-primary)] font-bold py-3.5 px-8 rounded-xl text-sm transition-transform hover:scale-105 active:scale-95 flex items-center gap-2 shadow-[0_8px_20px_rgba(138,79,255,0.3)] w-fit">
+                 <Link to="/campaigns" className="bg-[var(--violet)] hover:bg-[#6b3deb] text-[var(--text-primary)] font-bold py-3.5 px-8 rounded-xl text-sm transition-transform hover:scale-105 active:scale-95 flex items-center gap-2 shadow-[0_8px_20px_rgba(138,79,255,0.3)] w-fit">
                    Explore Campaigns <ArrowRight size={16} />
                  </Link>
                </div>
@@ -499,7 +504,7 @@ export default function CreatorDashboard({ user }) {
                <h3 className="text-xl font-bold text-[var(--text-primary)] tracking-tight">Recommended Campaigns</h3>
                <span className="text-sm font-medium text-[var(--text-secondary)]">by Brands & Agencies</span>
              </div>
-             <Link to="/explore" className="text-sm font-bold text-[var(--violet)] hover:underline flex items-center gap-1 bg-[var(--bg-elevated)] px-4 py-2 rounded-full transition-colors border border-[var(--border-default)]">View all <ArrowRight size={14}/></Link>
+             <Link to="/campaigns" className="text-sm font-bold text-[var(--violet)] hover:underline flex items-center gap-1 bg-[var(--bg-elevated)] px-4 py-2 rounded-full transition-colors border border-[var(--border-default)]">View all <ArrowRight size={14}/></Link>
           </div>
           
           <div className="flex overflow-x-auto gap-4 pb-4 snap-x hide-scrollbar">

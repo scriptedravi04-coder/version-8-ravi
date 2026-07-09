@@ -50,7 +50,7 @@ export default function CreatorOnboarding({ user, onComplete }: { user: any, onC
         youtube_video_rate: state.youtubeVideoRate,
         barter_mode: state.barterMode,
       };
-      saveCreatorProfileStep(user.id, dataToSave);
+      saveCreatorProfileStep(user.user_id, dataToSave);
     }
   }, [step]);
 
@@ -59,7 +59,7 @@ export default function CreatorOnboarding({ user, onComplete }: { user: any, onC
   };
 
   const handleDevBypass = () => {
-    saveCreatorProfileStep(user.id, {
+    saveCreatorProfileStep(user.user_id, {
       full_name: "Developer Bypass",
       profile_status: "under_review",
       onboarding_complete: true
@@ -73,20 +73,20 @@ export default function CreatorOnboarding({ user, onComplete }: { user: any, onC
   }
 
   return (
-    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-12 bg-[#1a1b26] text-[#c0caf5]">
+    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-12 bg-[var(--bg-base)] text-[var(--text-primary)]">
       {/* Dev Bypass */}
       {process.env.NODE_ENV !== 'production' && (
         <button 
           onClick={handleDevBypass}
-          className="fixed bottom-4 left-4 z-50 bg-[#e0af68] text-[#1a1b26] px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-1 shadow-lg hover:bg-[#ffc777]"
+          className="fixed bottom-4 left-4 z-50 bg-[#e0af68] text-white px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-1 shadow-lg hover:bg-[#ffc777]"
         >
           <Zap size={14} /> Skip to Dashboard (Dev Mode)
         </button>
       )}
 
       {/* Left Panel: Live Preview */}
-      <div className="hidden lg:flex lg:col-span-7 bg-[#24283b]/50 border-r border-[#565f89]/20 p-8 flex-col items-center justify-center relative overflow-hidden order-2 lg:order-1">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-[#7aa2f7]/5 via-[#1a1b26]/0 to-[#1a1b26]/0 pointer-events-none"></div>
+      <div className="hidden lg:flex lg:col-span-7 bg-[var(--bg-card)]/50 border-r border-[var(--border-default)] p-8 flex-col items-center justify-center relative overflow-hidden order-2 lg:order-1">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-[#3B82F6]/5 via-[var(--bg-base)]/0 to-[var(--bg-base)]/0 pointer-events-none"></div>
         <div className="w-full max-w-sm relative z-10">
           <LivePreviewCard />
         </div>
@@ -100,11 +100,11 @@ export default function CreatorOnboarding({ user, onComplete }: { user: any, onC
             <div className="flex items-center gap-3 mb-8">
             {[1, 2, 3, 4].map((i) => (
               <React.Fragment key={i}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${step >= i ? 'bg-[#7aa2f7] text-[#1a1b26]' : 'bg-[#24283b] text-[#565f89] border border-[#565f89]/30'}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${step >= i ? 'bg-[#3B82F6] text-white' : 'bg-[var(--bg-card)] text-[var(--text-secondary)] border border-[var(--border-default)]'}`}>
                   {i}
                 </div>
                 {i < 4 && (
-                  <div className={`flex-1 h-1 rounded-full transition-all ${step > i ? 'bg-[#7aa2f7]' : 'bg-[#24283b] border border-[#565f89]/30'}`} />
+                  <div className={`flex-1 h-1 rounded-full transition-all ${step > i ? 'bg-[#3B82F6]' : 'bg-[var(--bg-card)] border border-[var(--border-default)]'}`} />
                 )}
               </React.Fragment>
             ))}
@@ -130,8 +130,8 @@ export default function CreatorOnboarding({ user, onComplete }: { user: any, onC
       </div>
       
       {/* Mobile Live Preview Toggle or Stack */}
-      <div className="w-full sm:hidden p-6 bg-[#24283b] border-t border-[#565f89]/30 order-3">
-         <h3 className="text-center text-[#565f89] font-bold text-xs uppercase mb-4 tracking-widest">Live Profile Preview</h3>
+      <div className="w-full sm:hidden p-6 bg-[var(--bg-card)] border-t border-[var(--border-default)] order-3">
+         <h3 className="text-center text-[var(--text-secondary)] font-bold text-xs uppercase mb-4 tracking-widest">Live Profile Preview</h3>
          <LivePreviewCard />
       </div>
     </div>

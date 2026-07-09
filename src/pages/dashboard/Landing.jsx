@@ -213,7 +213,7 @@ function Hero() {
         </motion.p>
 
         <motion.div initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:0.5,duration:0.5}} className="mt-10 flex flex-wrap gap-3 justify-center">
-          <Link to="/explore" data-testid="hero-explore-cta" className="btn-secondary">Explore Creators</Link>
+          <Link to="/creators" data-testid="hero-explore-cta" className="btn-secondary">Explore Creators</Link>
           <Link to="/signup" data-testid="hero-signup-cta" className="btn-primary">Get Started Free <ArrowRight size={16}/></Link>
         </motion.div>
       </div>
@@ -492,10 +492,10 @@ function LandingFooter() {
           <div className="md:col-span-3 col-span-1">
             <h4 className="text-xs font-black text-[var(--text-primary)]/90 uppercase tracking-widest mb-4 font-display">Explore Platform</h4>
             <ul className="space-y-3">
-              <li><Link to="/explore" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">Creator Discovery</Link></li>
+              <li><Link to="/creators" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">Creator Discovery</Link></li>
               <li><Link to="/signup?role=brand" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">D2C Alliances</Link></li>
               <li><Link to="/ugc-orders" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors flex items-center gap-1.5">UGC Campaign Briefs <span className="text-[8px] bg-[#D9F111]/15 text-[#D9F111] px-1.5 py-0.5 rounded font-black uppercase">Live</span></Link></li>
-              <li><Link to="/explore" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">Premium Rate Cards</Link></li>
+              <li><Link to="/creators" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">Premium Rate Cards</Link></li>
             </ul>
           </div>
 
@@ -506,7 +506,7 @@ function LandingFooter() {
               <li><Link to="/signup?role=brand" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">Talent Agencies</Link></li>
               <li><Link to="/signup?role=brand" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">Brand Managers</Link></li>
               <li><Link to="/signup?role=creator" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">Verified Creators</Link></li>
-              <li><Link to="/explore" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors font-semibold text-[#D9F111]">Barter Directory</Link></li>
+              <li><Link to="/creators" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors font-semibold text-[#D9F111]">Barter Directory</Link></li>
             </ul>
           </div>
 

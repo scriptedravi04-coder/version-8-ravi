@@ -4,6 +4,7 @@ import { api } from "../../lib/api";
 import { toast } from "sonner";
 import { Check, ChevronRight, Video, Tag, CheckCircle2, AlertCircle } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
+import AIGenerateButton from "../../components/shared/AIGenerateButton";
 
 export default function BrandUGCPost() {
   const navigate = useNavigate();
@@ -74,7 +75,16 @@ export default function BrandUGCPost() {
         <input type="url" className="w-full bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-xl px-4 py-3.5 text-[var(--text-primary)] focus:border-[#7c3aed] transition-colors outline-none" placeholder="Link to a similar video or moodboard" value={formData.sample_content_url || ''} onChange={e => setFormData({...formData, sample_content_url: e.target.value})} />
       </div>
       <div>
-        <label className="block text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-2">Product Description</label>
+        
+  <div className="flex justify-between items-end mb-2">
+    <label className="block text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest">Product Description</label>
+    <AIGenerateButton 
+      prompt={`Title: ${formData.title}, Product: ${formData.product_name}`} 
+      type="campaign_brief" 
+      onGenerate={(text) => setFormData(prev => ({...prev, product_description: text}))} 
+    />
+  </div>
+  
         <textarea rows={3} className="w-full bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-xl px-4 py-3 text-[var(--text-primary)] focus:border-[#7c3aed] transition-colors outline-none" placeholder="What makes it special?" value={formData.product_description} onChange={e => setFormData({...formData, product_description: e.target.value})} />
       </div>
       <div>

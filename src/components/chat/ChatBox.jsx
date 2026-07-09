@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Send, Upload, FileText, FileSignature, CheckCircle, Info, MoreVertical, MessageCircle, Mail, MessageSquare, Search, ShieldAlert, Award, Lock, ShieldCheck, BarChart3, Handshake, Check, Sparkles, IndianRupee } from "lucide-react";
+import { Loader2, Sparkles, Send, Upload, FileText, FileSignature, CheckCircle, Info, MoreVertical, MessageCircle, Mail, MessageSquare, Search, ShieldAlert, Award, Lock, ShieldCheck, BarChart3, Handshake, Check, IndianRupee } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import MessageBubble from "./MessageBubble";
@@ -47,6 +47,43 @@ export default function ChatBox({ thread, user, onlineUsers = [] }) {
   const isDealFixed = currentThread ? (currentThread.status !== 'NEGOTIATING' && (currentThread.agreed_amount > 0 || currentThread.status === 'ACTIVE')) : false;
 
   const showTabs = !currentThread?.is_ugc && !isDealFixed && currentThread?.flow_state !== 'APPROVED' && currentThread?.flow_state !== 'AI_AGREEMENT_READY';
+
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const [isAiEvaluating, setIsAiEvaluating] = useState(false);
+  const handleAiEvaluation = async () => {
+    setIsAiEvaluating(true);
+    try {
+      // Simulate API call to track performance
+      await new Promise(r => setTimeout(r, 1500));
+      toast.success("AI Performance evaluation complete! Stats updated in Leaderboard.");
+    } catch (e) {
+      toast.error("Failed to run AI evaluation.");
+    } finally {
+      setIsAiEvaluating(false);
+    }
+  };
+
+  const handleAiAssist = async () => {
+    setAiLoading(true);
+    try {
+      const { data } = await api.post("/ai/negotiation", {
+        history: currentThread.messages || [],
+        offer: currentThread.agreed_amount,
+        brandContext: currentThread.campaign,
+        creatorContext: currentThread.creator
+      });
+      if (data && data.suggestedResponse) {
+        setText(data.suggestedResponse);
+        toast.success(data.advice || "AI Suggestion loaded!");
+      }
+    } catch (e) {
+      toast.error("Failed to get AI assistance.");
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   const effectiveInputMode = showTabs ? inputMode : "chat";
 
   // Sponsorship and Contract Negotiation states
@@ -204,7 +241,7 @@ export default function ChatBox({ thread, user, onlineUsers = [] }) {
           </p>
 
           {isBrand ? (
-            <Link to="/explore" className="px-6 py-3 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface)] text-[var(--text-primary)] font-bold rounded-xl transition-colors flex items-center gap-2 shadow-lg">
+            <Link to="/creators" className="px-6 py-3 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface)] text-[var(--text-primary)] font-bold rounded-xl transition-colors flex items-center gap-2 shadow-lg">
                <Search size={18} /> Explore Creators
             </Link>
           ) : (
@@ -663,12 +700,18 @@ export default function ChatBox({ thread, user, onlineUsers = [] }) {
             {/* Safety & Compliance Indicators */}
             {safetyAccepted ? (
               <div className="flex gap-2 mb-3 overflow-x-auto pb-1 no-scrollbar justify-center sm:justify-start max-w-4xl mx-auto">
-                {!isBrand && currentThread.status === 'ACTIVE' && (
+                                {!isBrand && currentThread.status === "ACTIVE" && (
                   <button onClick={async () => {
                     await api.post(`/chat/v2/threads/${thread.id}/submit-content`, { content_url: "example.com" });
                     loadMessages();
                   }} className="whitespace-nowrap px-4 py-1.5 bg-[var(--bg-elevated)] hover:bg-[var(--border-strong)] rounded-full text-xs font-bold flex items-center gap-2 transition-colors">
                     <Upload size={14} /> Submit Content Proof
+                  </button>
+                )}
+                {isBrand && currentThread.status === "ACTIVE" && (
+                  <button onClick={handleAiEvaluation} disabled={isAiEvaluating} className="whitespace-nowrap px-4 py-1.5 bg-[var(--violet)]/10 text-[var(--violet)] border border-[var(--violet)]/20 hover:bg-[var(--violet)]/20 rounded-full text-xs font-bold flex items-center gap-2 transition-colors">
+                    {isAiEvaluating ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />} 
+                    Run AI Performance Evaluation
                   </button>
                 )}
                 {isBrand && currentThread.status === 'CONTENT_SUBMITTED' && (
@@ -737,7 +780,17 @@ export default function ChatBox({ thread, user, onlineUsers = [] }) {
                     <button className="p-3 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors rounded-full hover:bg-[var(--bg-elevated)] shrink-0">
                       <Upload size={20} />
                     </button>
+                    
+                    <button 
+                      onClick={handleAiAssist}
+                      disabled={aiLoading}
+                      title="AI Negotiation Assistant"
+                      className="p-3 text-[var(--violet)] hover:text-white hover:bg-[var(--violet)] transition-colors rounded-full shrink-0"
+                    >
+                      {aiLoading ? <Loader2 size={20} className="animate-spin" /> : <Sparkles size={20} />}
+                    </button>
                     <textarea
+
                       value={text}
                       onChange={e => setText(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}

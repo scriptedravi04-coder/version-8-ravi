@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowLeft, Instagram, Loader2, Shield, CheckCircle2 } from "lucide-react";
 import CreatorLivePreview from "./CreatorLivePreview";
-import { supabase } from "../../lib/supabase";
+import AIGenerateButton from "../shared/AIGenerateButton";
+import { db } from "../../lib/firebase";
+import { doc, setDoc } from "firebase/firestore";
 import { toast } from "sonner";
 import { api } from "../../lib/api";
 
@@ -45,18 +47,35 @@ export default function CreatorOnboardingFlow({ user, onComplete }) {
   
   const [formData, setFormData] = useState({
     photoUrl: "", name: user?.name?.trim().split(" ")[0] || "", bio: "", category: "", gender: "Female",
-    city: "", state: "", pinCode: "", languages: [],
+    dob: "", age: null, city: "", state: "", pinCode: "", languages: [],
     instagramHandle: "", followers: 0, avgReach: 0,
     rateReel: "", rateStory: "", barterMode: "Cash Only"
   });
 
-  const [nicheSearch, setNicheSearch] = useState("");
-  const [showNicheDropdown, setShowNicheDropdown] = useState(false);
+  
+  
   const [citySearch, setCitySearch] = useState("");
   const [showCityDropdown, setShowCityDropdown] = useState(false);
 
-  const filteredNiches = VALID_NICHES.filter(n => n.toLowerCase().startsWith(nicheSearch.toLowerCase()));
+  
   const filteredCities = INDIAN_CITIES.filter(n => n.toLowerCase().startsWith(citySearch.toLowerCase()));
+
+  
+  const handleDobChange = (e) => {
+    const dobValue = e.target.value;
+    if (dobValue) {
+      const birthDate = new Date(dobValue);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      setFormData(prev => ({ ...prev, dob: dobValue, age }));
+    } else {
+      setFormData(prev => ({ ...prev, dob: dobValue, age: null }));
+    }
+  };
 
   const handlePincodeChange = async (val) => {
     setFormData(prev => ({ ...prev, pinCode: val }));
@@ -107,12 +126,16 @@ export default function CreatorOnboardingFlow({ user, onComplete }) {
   const handleSaveAndComplete = async () => {
     setLoading(true);
     try {
-      if (supabase) {
-        await supabase.from('creator_profiles').upsert({
-          user_id: user?.user_id || user?.id,
+      
+      const userId = user?.user_id || user?.id || user?.uid;
+      if (userId) {
+        await setDoc(doc(db, "creator_profiles", userId), {
+          user_id: userId,
           full_name: formData.name,
           avatar_url: formData.photoUrl,
           bio: formData.bio,
+          dob: formData.dob,
+          age: formData.age,
           primary_niche: formData.category,
           gender: formData.gender,
           city: formData.city,
@@ -125,15 +148,13 @@ export default function CreatorOnboardingFlow({ user, onComplete }) {
           rate_reel: formData.rateReel,
           rate_story: formData.rateStory,
           barter_mode: formData.barterMode,
-          onboarding_completed: true,
-          onboarding_step: 5
-        }, { onConflict: 'user_id' }).select();
+          onboarded_at: new Date().toISOString(),
+          onboarding_completed: true
+        }, { merge: true });
+        
+        await setDoc(doc(db, "users", userId), { onboarded: true, onboarding_completed: true }, { merge: true });
       }
-      // Also update in API if required
-      await api.post("/auth/onboard", {
-        role: "creator",
-        data: { ...formData, onboarding_completed: true }
-      }).catch((apiErr) => console.error("API onboard error (ignored)", apiErr));
+
       
       if (onComplete) onComplete();
     } catch (e) {
@@ -190,7 +211,16 @@ export default function CreatorOnboardingFlow({ user, onComplete }) {
                 </div>
 
                 <div>
-                   <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase">Biography / Elevator Pitch</label>
+                   
+  <div className="flex justify-between items-end mb-2">
+    <label className="block text-xs font-bold text-[var(--text-secondary)] uppercase">Biography / Elevator Pitch</label>
+    <AIGenerateButton 
+      prompt={`Name: ${formData.name}, Category: ${formData.category}`} 
+      type="creator_bio" 
+      onGenerate={(text) => setFormData(prev => ({...prev, bio: text}))} 
+    />
+  </div>
+  
                    <textarea 
                      className="w-full bg-[var(--bg-card)] border border-[var(--border-default)] rounded-xl p-4 text-[var(--text-primary)] focus:border-[#7C5CFF]/50 focus:outline-none transition min-h-[100px]"
                      placeholder="Write 2-3 sentences..."
@@ -199,49 +229,54 @@ export default function CreatorOnboardingFlow({ user, onComplete }) {
                    />
                 </div>
 
-                <div className="flex gap-4">
-                  <div className="flex-1 relative">
-                     <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase">Primary Category *</label>
-                     <input 
-                       className="w-full bg-[var(--bg-card)] border border-[var(--border-default)] rounded-xl p-4 text-[var(--text-primary)] focus:border-[#7C5CFF]/50 focus:outline-none"
-                       placeholder="e.g., Tech"
-                       value={nicheSearch}
-                       onChange={e => {
-                         setNicheSearch(e.target.value);
-                         setShowNicheDropdown(true);
-                       }}
-                       onFocus={() => setShowNicheDropdown(true)}
+                <div>
+                   <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase">Primary Content Category *</label>
+                   <div className="flex flex-wrap gap-2 max-h-[160px] overflow-y-auto p-2 bg-[var(--bg-card)] border border-[var(--border-default)] rounded-xl custom-scrollbar">
+                     {VALID_NICHES.map(niche => (
+                       <button
+                         key={niche}
+                         onClick={() => setFormData({...formData, category: niche})}
+                         className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${formData.category === niche ? "bg-[#7C5CFF]/10 border-[#7C5CFF] text-[var(--text-primary)]" : "bg-[var(--bg-elevated)] border-[var(--border-default)] text-[var(--text-tertiary)] hover:border-[#7C5CFF]/50"}`}
+                       >
+                         {niche}
+                       </button>
+                     ))}
+                   </div>
+                </div>
+                
+                <div className="flex gap-4 mt-6">
+                  <div className="flex-1">
+                     <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase">Date of Birth</label>
+                     <input
+                       type="date"
+                       className="w-full bg-[var(--bg-card)] border border-[var(--border-default)] rounded-xl p-4 text-[var(--text-primary)] focus:border-[#7C5CFF]/50 focus:outline-none [color-scheme:dark]"
+                       value={formData.dob}
+                       onChange={handleDobChange}
                      />
-                     {showNicheDropdown && nicheSearch && (
-                       <div className="absolute top-full left-0 right-0 mt-2 bg-[var(--bg-elevated)] border border-[#7C5CFF]/30 rounded-xl max-h-60 overflow-y-auto z-50 shadow-2xl">
-                         {filteredNiches.length > 0 ? filteredNiches.map(n => (
-                           <button 
-                             key={n} 
-                             className="w-full text-left px-4 py-3 text-[var(--text-primary)] hover:bg-[#7C5CFF]/20 flex justify-between group"
-                             onClick={() => {
-                               setFormData({...formData, category: n});
-                               setNicheSearch(n);
-                               setShowNicheDropdown(false);
-                             }}
-                           >
-                             {n} <span className="text-[#7C5CFF] opacity-0 group-hover:opacity-100 uppercase text-[10px] font-bold">Select ↓</span>
-                           </button>
-                         )) : <div className="p-4 text-[var(--text-secondary)] text-sm">No matching niche found</div>}
+                  </div>
+                  <div className="flex-1 flex flex-col justify-end">
+                     {formData.age !== null && (
+                       <div className="h-[58px] flex items-center px-4 bg-[#7C5CFF]/10 border border-[#7C5CFF]/30 rounded-xl text-[var(--text-primary)] font-bold text-sm">
+                         Age: {formData.age} years
                        </div>
                      )}
                   </div>
-                  <div className="flex-1">
-                     <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase">Gender Identity</label>
-                     <select 
-                       className="w-full bg-[var(--bg-card)] border border-[var(--border-default)] rounded-xl p-4 text-[var(--text-primary)] focus:border-[#7C5CFF]/50 focus:outline-none appearance-none"
-                       value={formData.gender}
-                       onChange={e => setFormData({...formData, gender: e.target.value})}
-                     >
-                       <option>Female</option><option>Male</option><option>Other</option>
-                     </select>
-                  </div>
                 </div>
 
+                <div className="mt-6">
+                   <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase">Gender Identity</label>
+                   <div className="grid grid-cols-3 gap-3">
+                     {["Female", "Male", "Other"].map(g => (
+                       <button
+                         key={g}
+                         onClick={() => setFormData({...formData, gender: g})}
+                         className={`p-3 rounded-xl text-sm font-bold border transition-all text-center ${formData.gender === g ? "bg-[#7C5CFF]/10 border-[#7C5CFF] text-[var(--text-primary)] shadow-[0_0_15px_rgba(124,92,255,0.15)]" : "bg-[var(--bg-card)] border-[var(--border-default)] text-[var(--text-tertiary)] hover:border-white/30"}`}
+                       >
+                         {g}
+                       </button>
+                     ))}
+                   </div>
+                </div>
                 <div className="pt-4 flex justify-end">
                    <button onClick={() => setStep(2)} className="bg-[var(--violet)] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-[#6D4AE5] transition">
                      Continue <ArrowRight size={18} />

@@ -27,6 +27,22 @@ export default function CreatorProfile() {
   const { startLoading, stopLoading } = useLoading();
   const [c, setC] = useState(null);
   const [loadingError, setLoadingError] = useState(false);
+
+  const [aiMatchScore, setAiMatchScore] = useState(null);
+  const [isScoring, setIsScoring] = useState(false);
+
+  const handleMatchScore = async () => {
+    setIsScoring(true);
+    try {
+      const { data } = await api.post("/ai/match-score", { creator: c, campaign: { brand: user?.name || "The Brand" } });
+      setAiMatchScore(data);
+    } catch (e) {
+      toast.error("Failed to calculate AI match score");
+    } finally {
+      setIsScoring(false);
+    }
+  };
+
   const [activeTab, setActiveTab] = useState("portfolio");
   const [isSaved, setIsSaved] = useState(false);
 
@@ -80,7 +96,7 @@ export default function CreatorProfile() {
       <div className="max-w-[1200px] mx-auto px-6 py-24 text-center">
         <h2 className="text-2xl font-bold mb-2">Creator not found</h2>
         <p className="text-[var(--text-secondary)] mb-6">This creator profile may be private or deleted.</p>
-        <Link to="/explore" className="bg-[var(--violet)] px-6 py-2 rounded-xl font-bold">Go to Explore</Link>
+        <Link to="/creators" className="bg-[var(--violet)] px-6 py-2 rounded-xl font-bold">Go to Explore</Link>
       </div>
     );
   }
@@ -213,7 +229,7 @@ export default function CreatorProfile() {
       
       {/* Back button */}
       <div className="max-w-7xl mx-auto mb-6 flex items-center justify-between">
-        <button onClick={() => navigate('/explore')} className="text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-1.5 transition-colors">
+        <button onClick={() => navigate('/creators')} className="text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-1.5 transition-colors">
           <ArrowLeft size={16} /> Back to Directory
         </button>
         

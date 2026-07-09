@@ -1,6 +1,8 @@
+
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
-import { api } from "../lib/api";
-import { supabase } from "../lib/supabase";
+import { auth, db, googleProvider } from "../lib/firebase";
+import { signInWithPopup, signOut, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const AuthContext = createContext(null);
 
@@ -8,66 +10,106 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const checkAuth = useCallback(async () => {
-    // Skip /auth/me if no token + no cookie (avoids noisy 401 on first paint)
-    const hasToken = typeof window !== "undefined" && localStorage.getItem("ybex_token");
-    const hasCookie = typeof document !== "undefined" && (document.cookie.includes("session_token=") || document.cookie.includes("has_session="));
-    
-    if (!hasToken && !hasCookie) {
-      setUser(null);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          const userDocRef = doc(db, "users", firebaseUser.uid);
+          const userDoc = await getDoc(userDocRef);
+          
+          let userData = {
+            id: firebaseUser.uid,
+            user_id: firebaseUser.uid,
+            email: firebaseUser.email,
+            name: firebaseUser.displayName,
+            picture: firebaseUser.photoURL,
+            role: "creator", // We will update this if explicitly passed during signup
+            onboarded: false
+          };
+
+          if (userDoc.exists()) {
+            userData = { ...userData, ...userDoc.data() };
+          } else {
+            // Wait to set doc until we know the role if possible, but default to creator for now
+            await setDoc(userDocRef, userData);
+          }
+          
+          localStorage.setItem("ybex_token", firebaseUser.uid);
+          setUser(userData);
+        } catch (error) {
+          console.error("Error fetching user data from Firestore:", error);
+          const fallbackUser = {
+            id: firebaseUser.uid,
+            user_id: firebaseUser.uid,
+            email: firebaseUser.email,
+            name: firebaseUser.displayName,
+            picture: firebaseUser.photoURL,
+            role: "creator",
+            onboarded: false
+          };
+          setUser(fallbackUser);
+          localStorage.setItem("ybex_token", firebaseUser.uid);
+        }
+      } else {
+        setUser(null);
+        localStorage.removeItem("ybex_token");
+      }
       setLoading(false);
-      return null;
-    }
-    
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const loginWithGoogle = async (role = "creator") => {
     try {
-      const { data } = await api.get("/auth/me");
-      // Map dev user user_id to just id to fit standard schema if parsing needed
-      const mappedUser = { ...data, id: data.user_id || data.id };
-      setUser(mappedUser);
-      return mappedUser;
-    } catch (e) {
-      setUser(null);
-      return null;
+      setLoading(true);
+      const res = await signInWithPopup(auth, googleProvider);
+      
+      // If new user, set role immediately
+      const userDocRef = doc(db, "users", res.user.uid);
+      const userDoc = await getDoc(userDocRef);
+      if (!userDoc.exists()) {
+        await setDoc(userDocRef, {
+            id: res.user.uid,
+            user_id: res.user.uid,
+            email: res.user.email,
+            name: res.user.displayName,
+            picture: res.user.photoURL,
+            role: role,
+            onboarded: false
+        }, { merge: true });
+      }
+      return res.user;
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+      throw error;
     } finally {
       setLoading(false);
     }
-  }, []);
-
-  useEffect(() => {
-    // If returning from OAuth callback, skip /me check (AuthCallback will exchange first)
-    if (typeof window !== "undefined" && window.location.hash?.includes("session_id=")) {
-      setLoading(false);
-      return;
-    }
-    checkAuth();
-  }, [checkAuth]);
-
-  const signup = async (name, email, password, role, phone) => {
-    const { data } = await api.post("/auth/signup", { name, email, password, role, phone });
-    if (data.token) localStorage.setItem("ybex_token", data.token);
-    setUser(data.user);
-    return data.user;
   };
 
-  const login = async (email, password) => {
-    const { data } = await api.post("/auth/login", { email, password });
-    if (data.token) localStorage.setItem("ybex_token", data.token);
-    setUser(data.user);
-    return data.user;
-  };
+  const login = async (email, password) => { try { setLoading(true); const res = await signInWithEmailAndPassword(auth, email, password); return res.user; } catch (error) { console.error("Error signing in with email/password:", error); throw error; } finally { setLoading(false); } };
+  const signup = async (email, password, role = "creator") => { try { setLoading(true); const res = await createUserWithEmailAndPassword(auth, email, password); const userDocRef = doc(db, "users", res.user.uid); await setDoc(userDocRef, { id: res.user.uid, user_id: res.user.uid, email: res.user.email, name: res.user.email?.split("@")[0] || "User", role: role, onboarded: false }); return res.user; } catch (error) { console.error("Error signing up with email/password:", error); throw error; } finally { setLoading(false); } };
 
   const logout = async () => {
-    try { await api.post("/auth/logout"); } catch (e) { /* ignore */ }
-    localStorage.removeItem("ybex_token");
-    setUser(null);
+    await signOut(auth);
   };
 
   const refreshUser = async () => {
-    return await checkAuth();
+    if (auth.currentUser) {
+      const userDocRef = doc(db, "users", auth.currentUser.uid);
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
+        const u = { ...userDoc.data() };
+        setUser(u);
+        return u;
+      }
+    }
+    return null;
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signup, login, logout, refreshUser, setUser }}>
+    <AuthContext.Provider value={{ user, loading, loginWithGoogle, signup, login, logout, refreshUser, setUser }}>
       {children}
     </AuthContext.Provider>
   );

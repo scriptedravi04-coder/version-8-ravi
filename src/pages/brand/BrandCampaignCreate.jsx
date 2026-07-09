@@ -3,7 +3,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../../lib/api";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Check, Sparkles, UploadCloud, FileText, Calendar, Compass, ListTodo, Layers, ArrowLeft, X, Plus, Search } from "lucide-react";
+import AIGenerateButton from "../../components/shared/AIGenerateButton";
+import { Loader2, ChevronLeft, ChevronRight, Check, Sparkles, UploadCloud, FileText, Calendar, Compass, ListTodo, Layers, ArrowLeft, X, Plus, Search } from "lucide-react";
 import { CustomDatePicker } from "../../components/ui/custom-date-picker";
 import { VALID_NICHES, INDIAN_CITIES } from "../../lib/constants";
 
@@ -16,6 +17,33 @@ export default function BrandCampaignCreate() {
   const [submitting, setSubmitting] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);
   const [kyc, setKyc] = useState(null);
+
+
+  const [aiGeneratorOpen, setAiGeneratorOpen] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [isAiGenerating, setIsAiGenerating] = useState(false);
+
+  const handleAiGenerate = async () => {
+    if (!aiPrompt.trim()) return;
+    setIsAiGenerating(true);
+    try {
+      const { data } = await api.post("/ai/generate-campaign", { prompt: aiPrompt });
+      if (data) {
+        setCampaignForm(prev => ({
+          ...prev,
+          ...data,
+          categories: data.categories || prev.categories,
+          platforms: data.platforms || prev.platforms
+        }));
+        toast.success("Campaign brief generated successfully!");
+        setAiGeneratorOpen(false);
+      }
+    } catch (e) {
+      toast.error("Failed to generate campaign");
+    } finally {
+      setIsAiGenerating(false);
+    }
+  };
 
   // Form State
   const [campaignForm, setCampaignForm] = useState({
@@ -71,7 +99,56 @@ export default function BrandCampaignCreate() {
       if (languageRef.current && !languageRef.current.contains(event.target)) setShowLanguageDropdown(false);
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    
+      {/* AI Smart Generator Modal */}
+      <AnimatePresence>
+        {aiGeneratorOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setAiGeneratorOpen(false)}
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-lg bg-[var(--bg-card)] border border-[var(--border-default)] rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+            >
+              <div className="p-4 border-b border-[var(--border-default)] flex items-center justify-between bg-[var(--bg-elevated)]">
+                <div className="flex items-center gap-2 text-[var(--text-primary)] font-bold">
+                  <Sparkles size={18} className="text-[var(--violet)]" />
+                  AI Smart Brief Generator
+                </div>
+                <button onClick={() => setAiGeneratorOpen(false)} className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card)] rounded-xl transition-colors">
+                  <X size={16} />
+                </button>
+              </div>
+              <div className="p-5 flex-1 overflow-y-auto">
+                <p className="text-sm text-[var(--text-secondary)] mb-4">
+                  Describe your campaign in a few words, and AI will automatically fill out the title, description, budget, deliverables, dos, donts, and hashtags for you.
+                </p>
+                <textarea
+                  value={aiPrompt}
+                  onChange={(e) => setAiPrompt(e.target.value)}
+                  placeholder="e.g. A skincare campaign for a new vitamin C serum. Need 5 Instagram influencers in Mumbai, budget is 10k max each. They need to make 1 reel demonstrating the product."
+                  className="w-full h-32 bg-foreground/5 border border-[var(--border-default)] rounded-xl p-3 text-sm text-[var(--text-primary)] placeholder-[var(--text-tertiary)] outline-none focus:border-[var(--violet)]/50 focus:bg-foreground/10 transition-all resize-none"
+                />
+              </div>
+              <div className="p-4 border-t border-[var(--border-default)] bg-[var(--bg-elevated)] flex justify-end gap-3">
+                <button onClick={() => setAiGeneratorOpen(false)} className="px-4 py-2 text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">Cancel</button>
+                <button 
+                  onClick={handleAiGenerate}
+                  disabled={isAiGenerating || !aiPrompt.trim()}
+                  className="px-5 py-2 bg-[var(--violet)] text-white text-sm font-bold rounded-xl hover:bg-[#6b4aff] transition-all disabled:opacity-50 flex items-center gap-2 shadow-md"
+                >
+                  {isAiGenerating ? <><Loader2 size={16} className="animate-spin" /> Generating...</> : <><Sparkles size={16} /> Generate Brief</>}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+  return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -257,7 +334,8 @@ export default function BrandCampaignCreate() {
 
   return (
     <div className="w-full max-w-none px-4 sm:px-6 md:px-8 py-10 text-left min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]">
-      <div className="mb-8 flex items-center justify-between">
+      
+      <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <button 
             onClick={() => navigate("/brand/campaigns")}
@@ -269,7 +347,16 @@ export default function BrandCampaignCreate() {
             Create a Campaign
           </h1>
         </div>
+        <button 
+          type="button"
+          onClick={() => setAiGeneratorOpen(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-[var(--violet)] text-white hover:bg-[#6b4aff] rounded-xl text-sm font-bold transition-all shadow-md"
+        >
+          <Sparkles size={16} />
+          Smart AI Brief Generator
+        </button>
       </div>
+
 
       <div className="grid grid-cols-5 gap-3 mb-8">
         {stepsInfo.map(info => {
@@ -385,7 +472,16 @@ export default function BrandCampaignCreate() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-[var(--text-secondary)] mb-2 block uppercase tracking-wider">Descriptive Brief / Details</label>
+                  
+  <div className="flex justify-between items-end mb-2">
+    <label className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Descriptive Brief / Details</label>
+    <AIGenerateButton 
+      prompt={`Title: ${campaignForm.title}, Categories: ${campaignForm.categories.join(", ")}, Brand Type: ${campaignForm.brand_type}, Dos: ${campaignForm.dos}, Donts: ${campaignForm.donts}`} 
+      type="campaign_brief" 
+      onGenerate={(text) => setCampaignForm(prev => ({...prev, description: text}))} 
+    />
+  </div>
+  
                   <textarea
                     rows={4}
                     value={campaignForm.description}
@@ -568,7 +664,7 @@ export default function BrandCampaignCreate() {
                   <input
                     type="number"
                     value={campaignForm.max_creators}
-                    onChange={(e) => setCampaignForm(prev => ({ ...prev, max_creators: parseInt(e.target.value) || 200 }))}
+                    onChange={(e) => setCampaignForm(prev => ({ ...prev, max_creators: e.target.value === "" ? "" : parseInt(e.target.value) }))}
                     className="w-full max-w-[200px] px-4 py-3 border border-[var(--border-default)] rounded-xl text-sm bg-[var(--bg-elevated)] focus:border-[#7C5CFF] text-[var(--text-primary)] outline-none transition-colors"
                   />
                 </div>

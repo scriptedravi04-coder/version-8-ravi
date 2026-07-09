@@ -45,11 +45,11 @@ export default function Settings() {
         if (user.role === "brand") {
           let data;
           if (supabase) {
-             const res = await supabase.from('brand_profiles').select('*').eq('user_id', user.id).single();
+             const res = await supabase.from('brand_profiles').select('*').eq('user_id', user.user_id).single();
              if (res.data) data = res.data;
           }
           if (!data) {
-             const res = await api.get("/brands/me");
+             const res = await api.get("/brands/me").catch(() => ({ data: null }));
              data = res.data;
           }
           if (mounted && data) {
@@ -69,11 +69,11 @@ export default function Settings() {
         } else {
            let data;
            if (supabase) {
-             const res = await supabase.from('creator_profiles').select('*').eq('user_id', user.id).single();
+             const res = await supabase.from('creator_profiles').select('*').eq('user_id', user.user_id).single();
              if (res.data) data = res.data;
            }
            if (!data) {
-             const res = await api.get(`/creators/${user.id}`);
+             const res = await api.get(`/creators/${user.user_id}`).catch(() => ({ data: null }));
              data = res.data;
            }
           if (mounted && data) {
@@ -353,7 +353,7 @@ export default function Settings() {
 
       let currRateCard = {};
       try {
-        const { data: currData } = await api.get(`/creators/${user.id}`);
+        const { data: currData } = await api.get(`/creators/${user.user_id}`);
         currRateCard = currData?.rate_card || {};
       } catch (e) { }
 

@@ -421,7 +421,7 @@ export default function InfoHub() {
                   <Link to="/signup?role=brand" className="px-5 py-2.5 bg-[#D9F111] hover:bg-[#D9F111]/95 text-black font-semibold rounded-xl text-xs transform hover:scale-105 transition-all outline-none">
                     Start Campaign Brief
                   </Link>
-                  <Link to="/explore" className="px-5 py-2.5 bg-foreground/5 hover:bg-foreground/10 border border-[var(--border-default)] text-[var(--text-primary)] rounded-xl text-xs font-semibold hover:scale-105 transition-all">
+                  <Link to="/creators" className="px-5 py-2.5 bg-foreground/5 hover:bg-foreground/10 border border-[var(--border-default)] text-[var(--text-primary)] rounded-xl text-xs font-semibold hover:scale-105 transition-all">
                     Explore Roster Rates
                   </Link>
                 </div>

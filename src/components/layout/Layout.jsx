@@ -80,7 +80,7 @@ export default function Layout({ children }) {
       description: nextMode === "ready" ? "You are now active and open to campaign pitches." : "You are marked as away/rest mode."
     });
     try {
-      await supabase.from('creator_profiles').update({ work_mode: nextMode === "ready" ? "available" : "away" }).eq('user_id', user.id);
+      await supabase.from('creator_profiles').update({ work_mode: nextMode === "ready" ? "available" : "away" }).eq('user_id', user.user_id);
     } catch(e) {}
   };
 
@@ -146,8 +146,7 @@ export default function Layout({ children }) {
                 <LayoutGrid size={20} className={isExactMatch('/dashboard') ? 'text-[var(--violet)]' : 'text-[var(--text-tertiary)]'} /> Dashboard
               </Link>
               
-              <Link to="/explore" className={`text-sm py-3 px-4 rounded-xl flex items-center gap-4 transition-all ${location.pathname.includes('/explore') ? 'text-[var(--violet)] bg-[var(--violet)]/10 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] font-medium'}`}>
-                <Compass size={20} className={location.pathname.includes('/explore') ? 'text-[var(--violet)]' : 'text-[var(--text-tertiary)]'} /> Live Campaigns
+              <Link to="/campaigns" className={`text-sm py-3 px-4 rounded-xl flex items-center gap-4 transition-all ${location.pathname.includes('/campaigns') ? 'text-[var(--violet)] bg-[var(--violet)]/10 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] font-medium'}`}><Compass size={20} className={location.pathname.includes("/campaigns") ? "text-[var(--violet)]" : "text-[var(--text-tertiary)]"} /> Live Campaigns
               </Link>
               
               <Link to="/collabs" className={`text-sm py-3 px-4 rounded-xl flex items-center gap-4 transition-all ${isExactMatch('/collabs') ? 'text-[var(--violet)] bg-[var(--violet)]/10 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] font-medium'}`}>
@@ -255,7 +254,7 @@ export default function Layout({ children }) {
                 className="fixed top-14 left-0 right-0 z-40 md:hidden bg-[var(--bg-card)] border-b border-[var(--border-default)] shadow-xl p-4 flex flex-col gap-2 overflow-y-auto max-h-[80vh]"
               >
                 <Link to="/dashboard" className="px-4 py-3 rounded-xl hover:bg-[var(--bg-elevated)] text-[var(--text-primary)] font-semibold flex items-center gap-3"><LayoutGrid size={18} />Dashboard</Link>
-                <Link to="/explore" className="px-4 py-3 rounded-xl hover:bg-[var(--bg-elevated)] text-[var(--text-primary)] font-semibold flex items-center gap-3"><Compass size={18} />Live Campaigns</Link>
+                <Link to="/campaigns" className="px-4 py-3 rounded-xl hover:bg-[var(--bg-elevated)] text-[var(--text-primary)] font-semibold flex items-center gap-3"><Compass size={20} className={location.pathname.includes("/campaigns") ? "text-[var(--violet)]" : "text-[var(--text-tertiary)]"} /> Live Campaigns</Link>
                 <Link to="/collabs" className="px-4 py-3 rounded-xl hover:bg-[var(--bg-elevated)] text-[var(--text-primary)] font-semibold flex items-center gap-3"><FileText size={18} />Applications</Link>
                 <Link to="/creator/ugc/orders" className="px-4 py-3 rounded-xl hover:bg-[var(--bg-elevated)] text-[var(--text-primary)] font-semibold flex items-center gap-3"><ShieldAlert size={18} />My Deals</Link>
                 <Link to="/chat" className="px-4 py-3 rounded-xl hover:bg-[var(--bg-elevated)] text-[var(--text-primary)] font-semibold flex items-center justify-between gap-3">
@@ -346,7 +345,7 @@ export default function Layout({ children }) {
                ) : user?.role === 'brand' ? (
                  <>
                    <SidebarNavItemInner to="/dashboard" icon={<LayoutGrid size={18} />}>Dashboard</SidebarNavItemInner>
-                   <SidebarNavItemInner to="/explore" icon={<Search size={18} />}>Explore Creators</SidebarNavItemInner>
+                   <SidebarNavItemInner to="/creators" icon={<Search size={18} />}>Explore Creators</SidebarNavItemInner>
                    <SidebarNavItemInner to="/brand/campaigns" icon={<Megaphone size={18} />}>My Campaigns</SidebarNavItemInner>
                    <SidebarNavItemInner to="/brand/inbox" icon={<MessageCircle size={18} />}>Inbox</SidebarNavItemInner>
                    <SidebarNavItemInner to="/brand/payments" icon={<Wallet size={18} />}>Payments & Escrow</SidebarNavItemInner>
@@ -467,7 +466,7 @@ export default function Layout({ children }) {
                 ) : user?.role === 'brand' ? (
                   <>
                     <Link to="/dashboard" className="px-4 py-3 rounded-xl hover:bg-[var(--bg-elevated)] text-[var(--text-primary)] font-semibold flex items-center gap-3"><LayoutGrid size={18} />Dashboard</Link>
-                    <Link to="/explore" className="px-4 py-3 rounded-xl hover:bg-[var(--bg-elevated)] text-[var(--text-primary)] font-semibold flex items-center gap-3"><Search size={18} />Explore Creators</Link>
+                    <Link to="/creators" className="px-4 py-3 rounded-xl hover:bg-[var(--bg-elevated)] text-[var(--text-primary)] font-semibold flex items-center gap-3"><Search size={18} />Explore Creators</Link>
                     <Link to="/brand/campaigns" className="px-4 py-3 rounded-xl hover:bg-[var(--bg-elevated)] text-[var(--text-primary)] font-semibold flex items-center gap-3"><Megaphone size={18} />My Campaigns</Link>
                     <Link to="/brand/inbox" className="px-4 py-3 rounded-xl hover:bg-[var(--bg-elevated)] text-[var(--text-primary)] font-semibold flex items-center gap-3"><MessageCircle size={18} />Inbox</Link>
                     <Link to="/brand/payments" className="px-4 py-3 rounded-xl hover:bg-[var(--bg-elevated)] text-[var(--text-primary)] font-semibold flex items-center gap-3"><Wallet size={18} />Payments & Escrow</Link>
@@ -525,7 +524,8 @@ export default function Layout({ children }) {
 
           {/* Clean Navbar */}
           <div className="hidden md:flex items-center gap-2 mx-auto">
-            <NavItem to="/explore" testId="nav-explore">Live Campaigns</NavItem>
+            <NavItem to="/campaigns" testId="nav-explore">Live Campaigns</NavItem>
+            <NavItem to="/creators" testId="nav-explore-creators">Explore Creators</NavItem>
             {user && <NavItem to="/campaigns" testId="nav-campaigns">Campaigns</NavItem>}
             <NavItem to="/ugc-orders" testId="nav-ugc-orders">
               <span className="flex items-center gap-1.5 font-semibold">
@@ -566,7 +566,7 @@ export default function Layout({ children }) {
             transition={{ duration: 0.25, ease: "easeOut" }}
             className="fixed top-20 left-4 right-4 z-40 md:hidden bg-[var(--bg-card)]/95 backdrop-blur-2xl border border-[var(--border-default)] rounded-2xl shadow-2xl p-3 flex flex-col gap-1 origin-top overflow-hidden"
           >
-            <Link to="/explore" className="px-4 py-3 rounded-xl hover:bg-foreground/5 text-sm font-medium">Explore Creators</Link>
+            <Link to="/creators" className="px-4 py-3 rounded-xl hover:bg-foreground/5 text-sm font-medium">Explore Creators</Link>
             <Link to="/campaigns" className="px-4 py-3 rounded-xl hover:bg-foreground/5 text-sm font-medium">Campaigns</Link>
             <Link to="/ugc-orders" className="px-4 py-3 rounded-xl hover:bg-foreground/5 text-sm font-medium flex items-center gap-2">
               <Film size={15} className="text-[#D9F111]"/> Live UGC Orders

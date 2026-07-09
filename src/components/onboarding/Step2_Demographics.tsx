@@ -83,10 +83,10 @@ export default function Step2_Demographics({ user }: { user: any }) {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
       <div>
-        <h2 className="text-3xl font-bold text-[#c0caf5]">
+        <h2 className="text-3xl font-bold text-[var(--text-primary)]">
           Local Reach & Languages
         </h2>
-        <p className="text-[#565f89] mt-2">
+        <p className="text-[var(--text-secondary)] mt-2">
           Brands search geographically and prioritize native local content
           delivery.
         </p>
@@ -95,7 +95,7 @@ export default function Step2_Demographics({ user }: { user: any }) {
       <div className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="relative">
-            <label className="block text-xs font-bold text-[#565f89] mb-2 uppercase">
+            <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase">
               City *
             </label>
             <input
@@ -108,10 +108,10 @@ export default function Step2_Demographics({ user }: { user: any }) {
               onFocus={() => setShowCityDropdown(true)}
               onBlur={() => setTimeout(() => setShowCityDropdown(false), 200)}
               placeholder="e.g. Mumbai"
-              className="w-full bg-[#1a1b26] border border-[#565f89]/50 rounded-xl p-3.5 text-[#c0caf5] focus:border-[#7aa2f7] outline-none"
+              className="w-full bg-[var(--bg-base)] border border-[var(--border-default)] rounded-xl p-3.5 text-[var(--text-primary)] focus:border-[#3B82F6] outline-none"
             />
             {showCityDropdown && citySearch !== "" && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-[#24283b] border border-[#565f89]/50 rounded-xl max-h-60 overflow-y-auto z-50 shadow-xl p-2 custom-scrollbar">
+              <div className="absolute top-full left-0 right-0 mt-2 bg-[var(--bg-card)] border border-[var(--border-default)] rounded-xl max-h-60 overflow-y-auto z-50 shadow-xl p-2 custom-scrollbar">
                 {filteredCities.map((c) => (
                   <button
                     key={c}
@@ -121,7 +121,7 @@ export default function Step2_Demographics({ user }: { user: any }) {
                       setCitySearch(c);
                       setShowCityDropdown(false);
                     }}
-                    className="w-full text-left px-4 py-2.5 text-sm text-[#c0caf5] hover:bg-[#7aa2f7]/20 rounded-lg transition"
+                    className="w-full text-left px-4 py-2.5 text-sm text-[var(--text-primary)] hover:bg-[#3B82F6]/20 rounded-lg transition"
                   >
                     {c}
                   </button>
@@ -130,7 +130,7 @@ export default function Step2_Demographics({ user }: { user: any }) {
             )}
           </div>
           <div>
-            <label className="block text-xs font-bold text-[#565f89] mb-2 uppercase">
+            <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase">
               State *
             </label>
             <input
@@ -138,13 +138,13 @@ export default function Step2_Demographics({ user }: { user: any }) {
               value={state}
               readOnly
               placeholder="e.g. Maharashtra"
-              className="w-full bg-[#1a1b26] border border-[#565f89]/50 rounded-xl p-3.5 text-[#c0caf5]/60 outline-none cursor-not-allowed"
+              className="w-full bg-[var(--bg-base)] border border-[var(--border-default)] rounded-xl p-3.5 text-[var(--text-primary)]/60 outline-none cursor-not-allowed"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-[#565f89] mb-2 uppercase">
+          <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase">
             Pin Code *
           </label>
           <div className="relative">
@@ -156,11 +156,11 @@ export default function Step2_Demographics({ user }: { user: any }) {
                 handlePincodeChange(e.target.value.replace(/[^0-9]/g, ""))
               }
               placeholder="e.g. 400001"
-              className="w-full bg-[#1a1b26] border border-[#565f89]/50 rounded-xl p-3.5 text-[#c0caf5] focus:border-[#7aa2f7] outline-none"
+              className="w-full bg-[var(--bg-base)] border border-[var(--border-default)] rounded-xl p-3.5 text-[var(--text-primary)] focus:border-[#3B82F6] outline-none"
             />
             {fetchingPin && (
               <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                <Loader2 className="animate-spin text-[#7aa2f7]" size={18} />
+                <Loader2 className="animate-spin text-[#3B82F6]" size={18} />
               </div>
             )}
           </div>
@@ -168,10 +168,10 @@ export default function Step2_Demographics({ user }: { user: any }) {
 
         <div>
           <div className="flex justify-between items-center mb-4">
-            <label className="block text-xs font-bold text-[#565f89] uppercase">
+            <label className="block text-xs font-bold text-[var(--text-secondary)] uppercase">
               Languages *
             </label>
-            <span className="text-xs text-[#7aa2f7] font-medium">
+            <span className="text-xs text-[#3B82F6] font-medium">
               {languages.length} Selected
             </span>
           </div>
@@ -180,7 +180,7 @@ export default function Step2_Demographics({ user }: { user: any }) {
               <button
                 key={lang}
                 onClick={() => toggleLanguage(lang)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all ${languages.includes(lang) ? "bg-[#7aa2f7]/20 border-[#7aa2f7] text-[#7aa2f7]" : "bg-[#1a1b26] border-[#565f89]/50 text-[#c0caf5] hover:border-[#7aa2f7]/50"}`}
+                className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all ${languages.includes(lang) ? "bg-[#3B82F6]/20 border-[#3B82F6] text-[#3B82F6]" : "bg-[var(--bg-base)] border-[var(--border-default)] text-[var(--text-primary)] hover:border-[#3B82F6]/50"}`}
               >
                 {lang}
               </button>
@@ -189,17 +189,17 @@ export default function Step2_Demographics({ user }: { user: any }) {
         </div>
       </div>
 
-      <div className="flex justify-between pt-6 border-t border-[#565f89]/20">
+      <div className="flex justify-between pt-6 border-t border-[var(--border-default)]">
         <button
           onClick={prevStep}
-          className="text-[#565f89] hover:text-[#c0caf5] font-medium px-4 py-3 transition"
+          className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-medium px-4 py-3 transition"
         >
           ← Back
         </button>
         <button
           onClick={nextStep}
           disabled={!isComplete}
-          className="bg-[#7aa2f7] text-[#1a1b26] font-bold py-3 px-8 rounded-xl hover:bg-[#6b91e5] transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-[#3B82F6] text-white font-bold py-3 px-8 rounded-xl hover:bg-[#6b91e5] transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Next: Social →
         </button>

@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowLeft, Loader2, Shield, Building2 } from "lucide-react";
 import BrandLivePreview from "./BrandLivePreview";
-import { supabase } from "../../lib/supabase";
+import AIGenerateButton from "../shared/AIGenerateButton";
+import { db } from "../../lib/firebase";
+import { doc, setDoc } from "firebase/firestore";
 import { toast } from "sonner";
 import { api } from "../../lib/api";
 
@@ -68,9 +70,11 @@ export default function BrandOnboardingFlow({ user, onComplete }) {
   const handleSaveAndComplete = async () => {
     setLoading(true);
     try {
-      if (supabase) {
-        await supabase.from('brand_profiles').upsert({
-          user_id: user?.user_id || user?.id,
+      
+      const userId = user?.user_id || user?.id || user?.uid;
+      if (userId) {
+        await setDoc(doc(db, "brand_profiles", userId), {
+          user_id: userId,
           company_name: formData.companyName,
           logo_url: formData.logoUrl,
           industry: formData.industry,
@@ -84,18 +88,15 @@ export default function BrandOnboardingFlow({ user, onComplete }) {
           pin_code: formData.pinCode,
           campaign_types: formData.campaignTypes,
           budget_range: formData.budgetRange,
-          preferred_creator_size: formData.creatorSize,
+          creator_size: formData.creatorSize,
           preferred_niches: formData.niches,
-          onboarding_completed: true,
-          onboarding_step: 4
-        }, { onConflict: 'user_id' }).select();
+          onboarded_at: new Date().toISOString(),
+          onboarding_completed: true
+        }, { merge: true });
+        
+        await setDoc(doc(db, "users", userId), { onboarded: true, onboarding_completed: true }, { merge: true });
       }
-      
-      // Also update in API
-      await api.post("/auth/onboard", {
-        role: "brand",
-        data: { ...formData, onboarding_completed: true }
-      }).catch((apiErr) => console.error("API onboard error (ignored)", apiErr));
+
       
       if (onComplete) onComplete();
     } catch (e) {

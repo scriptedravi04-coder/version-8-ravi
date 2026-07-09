@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";
 
@@ -46,6 +46,7 @@ const formatNum = (v) => {
 };
 
 export default function CreatorCard({ c, index = 0 }) {
+  const [imgLoaded, setImgLoaded] = useState(false);
   const totalFollowers = (c.followers_count) || ((c.followers_instagram || 0) + (c.followers_youtube || 0));
   const reach = c.avg_reach_per_reel || c.avg_reach || 0;
   
@@ -67,15 +68,22 @@ export default function CreatorCard({ c, index = 0 }) {
       style={{ '--card-glow': glow }}
     >
       {photoUrl ? (
-        <img 
-          className="creator-bg" 
-          src={photoUrl} 
-          alt={name}
-          onError={(e) => {
-            e.currentTarget.style.display = 'none';
-            e.currentTarget.nextElementSibling.style.display = 'flex';
-          }}
-        />
+        <>
+          {!imgLoaded && (
+            <div className="absolute inset-0 bg-[var(--bg-elevated)] animate-pulse z-0 rounded-[20px]" />
+          )}
+          <img 
+            className={`creator-bg ${imgLoaded ? "opacity-100" : "opacity-0"} transition-opacity duration-500`}
+            src={photoUrl} 
+            alt={name}
+            onLoad={() => setImgLoaded(true)}
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+              e.currentTarget.nextElementSibling.style.display = "flex";
+              setImgLoaded(true);
+            }}
+          />
+        </>
       ) : null}
       <div className="creator-bg-fallback" style={{ display: photoUrl ? 'none' : 'flex' }}>
         {initials}

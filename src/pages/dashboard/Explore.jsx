@@ -1087,7 +1087,7 @@ export default function Explore() {
             <AnimatePresence mode="popLayout">
               {filteredCreators.map((c, i) => (
                 <motion.div 
-                  key={c.id || c.user_id} 
+                  key={(c.id || c.user_id) ? String(c.id || c.user_id) + "-" + i : i} 
                   layout 
                   initial={{ opacity: 0, scale: 0.95 }} 
                   animate={{ opacity: 1, scale: 1 }} 

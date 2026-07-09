@@ -48,11 +48,11 @@ export default function PreStep_EmailVerify({ user }: { user: any }) {
       await supabase
         .from("users")
         .update({ email_verified: true })
-        .eq("id", user.id);
+        .eq("id", user.user_id);
       await supabase
         .from("verifications")
         .insert({
-          user_id: user.id,
+          user_id: user.user_id,
           type: "email",
           status: "verified",
           verified_at: new Date().toISOString(),
@@ -108,12 +108,12 @@ export default function PreStep_EmailVerify({ user }: { user: any }) {
         animate={{ opacity: 1, y: 0 }}
         className="w-full"
       >
-        <h2 className="text-3xl font-bold text-[#c0caf5] mb-2">
+        <h2 className="text-3xl font-bold text-[var(--text-primary)] mb-2">
           Verify Your Email
         </h2>
-        <p className="text-[#565f89] mb-8 mt-2">
+        <p className="text-[var(--text-secondary)] mb-8 mt-2">
           We need to verify{" "}
-          <span className="font-medium text-[#c0caf5]">{maskedEmail}</span>{" "}
+          <span className="font-medium text-[var(--text-primary)]">{maskedEmail}</span>{" "}
           before you continue.
         </p>
 
@@ -121,7 +121,7 @@ export default function PreStep_EmailVerify({ user }: { user: any }) {
           <button
             onClick={handleSendOTP}
             disabled={loading}
-            className="w-full bg-[#7aa2f7] text-[#1a1b26] font-bold py-3 px-4 rounded-xl hover:bg-[#6b91e5] transition flex items-center justify-center gap-2"
+            className="w-full bg-[#3B82F6] text-white font-bold py-3 px-4 rounded-xl hover:bg-[#6b91e5] transition flex items-center justify-center gap-2"
           >
             {loading ? <Loader2 className="animate-spin" size={18} /> : null}
             Send OTP
@@ -143,7 +143,7 @@ export default function PreStep_EmailVerify({ user }: { user: any }) {
                   value={digit}
                   onChange={(e) => handleChange(e, i)}
                   onKeyDown={(e) => handleKeyDown(e, i)}
-                  className="w-12 h-14 bg-[#1a1b26] border border-[#565f89] text-[#c0caf5] text-center text-xl font-bold rounded-xl focus:border-[#7aa2f7] focus:ring-1 focus:ring-[#7aa2f7] outline-none transition"
+                  className="w-12 h-14 bg-[var(--bg-base)] border border-[var(--border-default)] text-[var(--text-primary)] text-center text-xl font-bold rounded-xl focus:border-[#3B82F6] focus:ring-1 focus:ring-[#3B82F6] outline-none transition"
                 />
               ))}
             </div>
@@ -151,7 +151,7 @@ export default function PreStep_EmailVerify({ user }: { user: any }) {
             <button
               onClick={handleVerifyOTP}
               disabled={loading || otp.join("").length < 6}
-              className="w-full bg-[#7aa2f7] text-[#1a1b26] font-bold py-3 px-4 rounded-xl hover:bg-[#6b91e5] transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-[#3B82F6] text-white font-bold py-3 px-4 rounded-xl hover:bg-[#6b91e5] transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? <Loader2 className="animate-spin" size={18} /> : null}
               Verify Email
@@ -161,7 +161,7 @@ export default function PreStep_EmailVerify({ user }: { user: any }) {
               <button
                 onClick={handleSendOTP}
                 disabled={cooldown > 0 || loading}
-                className="text-[#565f89] hover:text-[#7aa2f7] transition disabled:opacity-50"
+                className="text-[var(--text-secondary)] hover:text-[#3B82F6] transition disabled:opacity-50"
               >
                 {cooldown > 0 ? `Resend OTP in ${cooldown}s` : "Resend OTP"}
               </button>

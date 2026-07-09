@@ -49,8 +49,8 @@ export default function BannerManager() {
     
     // Enforce 3 banners max for Dashboard Hero Carousel per audience
     const existingCarouselBanners = banners.filter(b => b.placement === 'Dashboard Hero Carousel' && b.type === formData.type);
-    if (formData.placement === 'Dashboard Hero Carousel' && existingCarouselBanners.length >= 3) {
-      toast.error(`Maximum 3 carousel banners allowed for ${formData.type}s. Please delete an existing one first.`);
+    if (formData.placement === 'Dashboard Hero Carousel' && existingCarouselBanners.length >= 5) {
+      toast.error(`Maximum 5 carousel banners allowed for ${formData.type}s. Please delete an existing one first.`);
       return;
     }
 
@@ -100,7 +100,7 @@ export default function BannerManager() {
     <div className="space-y-6">
        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex bg-[var(--bg-elevated)] p-1 rounded-xl border border-[var(--border-default)] w-full md:w-auto">
-             {['Influencer', 'Brand'].map(t => (
+             {['Common', 'Influencer', 'Brand'].map(t => (
                 <button 
                   key={t}
                   onClick={() => {
@@ -183,6 +183,7 @@ export default function BannerManager() {
                            onChange={(e) => setFormData({...formData, type: e.target.value})}
                            className="w-full bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#9D7CFF]"
                          >
+                            <option value="Common">Common (New Users)</option>
                             <option value="Influencer">Influencers</option>
                             <option value="Brand">Brands</option>
                          </select>
@@ -194,7 +195,7 @@ export default function BannerManager() {
                            onChange={(e) => setFormData({...formData, placement: e.target.value})}
                            className="w-full bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#9D7CFF]"
                          >
-                            <option value="Dashboard Hero Carousel">Dashboard Hero Carousel (Max 3)</option>
+                            <option value="Dashboard Hero Carousel">Dashboard Hero Carousel (Max 5)</option>
                             <option value="Sidebar">Sidebar</option>
                             <option value="Home Top Banner">Home Top Banner</option>
                          </select>

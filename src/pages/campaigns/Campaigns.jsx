@@ -288,10 +288,10 @@ export default function Campaigns() {
           <div className="py-20 flex justify-center"><div className="w-8 h-8 border-4 border-[var(--violet)] border-t-transparent rounded-full animate-spin"></div></div>
         ) : filtered.length > 0 ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {filtered.map(c => {
+            {filtered.map((c, index) => {
               const endsSoon = c.expiry_days > 0 && c.expiry_days <= 3;
               return (
-              <div key={c.id} className="bg-[var(--bg-card)] border border-[var(--border-default)] rounded-3xl p-5 sm:p-7 shadow-sm hover:shadow-xl hover:border-[var(--violet)]/30 transition-all cursor-pointer group flex flex-col" onClick={() => {
+              <div key={c.id + "-" + index} className="bg-[var(--bg-card)] border border-[var(--border-default)] rounded-3xl p-5 sm:p-7 shadow-sm hover:shadow-xl hover:border-[var(--violet)]/30 transition-all cursor-pointer group flex flex-col" onClick={() => {
                 if (c.isUgc) {
                   setSelectedBrief(c.rawUgcBrief);
                 } else {

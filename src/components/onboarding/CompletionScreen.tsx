@@ -22,14 +22,14 @@ export default function CompletionScreen({
         angle: 60,
         spread: 55,
         origin: { x: 0 },
-        colors: ["#7aa2f7", "#9ece6a", "#e0af68"],
+        colors: ["#3B82F6", "#9ece6a", "#e0af68"],
       });
       confetti({
         particleCount: 5,
         angle: 120,
         spread: 55,
         origin: { x: 1 },
-        colors: ["#7aa2f7", "#9ece6a", "#f7768e"],
+        colors: ["#3B82F6", "#9ece6a", "#f7768e"],
       });
 
       if (Date.now() < end) requestAnimationFrame(frame);
@@ -46,10 +46,10 @@ export default function CompletionScreen({
           onboarding_completed_at: new Date().toISOString(),
           profile_status: "under_review",
         })
-        .eq("user_id", user.id);
+        .eq("user_id", user.user_id);
 
       await supabase.from("notifications").insert({
-        user_id: user.id,
+        user_id: user.user_id,
         type: "system",
         title: "Profile Submitted!",
         message:
@@ -80,16 +80,16 @@ export default function CompletionScreen({
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2 }}
       >
-        <h1 className="text-4xl font-bold text-[#c0caf5] mb-4">
+        <h1 className="text-4xl font-bold text-[var(--text-primary)] mb-4">
           You're Live on YBEX! 🎉
         </h1>
-        <p className="text-[#565f89] text-lg max-w-md mx-auto mb-8">
+        <p className="text-[var(--text-secondary)] text-lg max-w-md mx-auto mb-8">
           Your profile is currently under review. Meanwhile, feel free to
           explore live campaigns!
         </p>
 
-        <div className="bg-[#24283b] border border-[#565f89]/30 p-4 rounded-2xl flex items-center justify-center gap-3 max-w-sm mx-auto mb-10 text-sm text-[#c0caf5]">
-          <Shield className="text-[#7aa2f7]" size={20} />
+        <div className="bg-[var(--bg-card)] border border-[var(--border-default)] p-4 rounded-2xl flex items-center justify-center gap-3 max-w-sm mx-auto mb-10 text-sm text-[var(--text-primary)]">
+          <Shield className="text-[#3B82F6]" size={20} />
           <span>
             All payments secured in escrow until deliverables are approved
           </span>
@@ -97,7 +97,7 @@ export default function CompletionScreen({
 
         <button
           onClick={handleFinish}
-          className="bg-[#7aa2f7] text-[#1a1b26] font-bold py-4 px-10 rounded-2xl hover:bg-[#6b91e5] transition flex items-center justify-center gap-2 mx-auto text-lg"
+          className="bg-[#3B82F6] text-white font-bold py-4 px-10 rounded-2xl hover:bg-[#6b91e5] transition flex items-center justify-center gap-2 mx-auto text-lg"
         >
           Go to Dashboard <ArrowRight size={20} />
         </button>

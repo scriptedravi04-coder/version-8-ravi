@@ -67,14 +67,14 @@ export default function BrandDashboard({ user }) {
       const { data: notifs } = await supabase
         .from('notifications')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', user.user_id)
         .order('created_at', { ascending: false })
         .limit(20);
 
       const { count: uCount } = await supabase
         .from('notifications')
         .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id)
+        .eq('user_id', user.user_id)
         .eq('read', false);
 
       if (notifs && notifs.length > 0) {
@@ -105,7 +105,7 @@ export default function BrandDashboard({ user }) {
         await supabase
           .from('notifications')
           .update({ read: true })
-          .eq('user_id', user.id);
+          .eq('user_id', user.user_id);
       }
     } catch (e) {
       console.warn(e);
@@ -119,7 +119,7 @@ export default function BrandDashboard({ user }) {
     loadNotifications();
 
     if (!user) return;
-    const channel = supabase.channel(`brand_notifs_${Math.random().toString(36).substring(2, 10)}`).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${user.id}` }, (payload) => { 
+    const channel = supabase.channel(`brand_notifs_${Math.random().toString(36).substring(2, 10)}`).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${user.user_id}` }, (payload) => { 
       setUnreadCount(c => c + 1); 
       setNotifications(n => [payload.new, ...n]);
     }).subscribe();

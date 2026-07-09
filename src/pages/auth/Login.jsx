@@ -102,30 +102,14 @@ export default function Login() {
     return () => window.removeEventListener("message", handleOAuthMessage);
   }, [navigate, refreshUser]);
 
+  
   const handleGoogle = async () => {
     try {
-      const redirectUri = window.location.origin + "/api/auth/google/callback";
-      const clientRedirectUri = window.location.origin + "/dashboard";
-      const { data } = await api.get(`/auth/google/url?redirect_uri=${encodeURIComponent(redirectUri)}&client_redirect_uri=${encodeURIComponent(clientRedirectUri)}`);
-      
-      const width = 500;
-      const height = 650;
-      const left = window.screen.width / 2 - width / 2;
-      const top = window.screen.height / 2 - height / 2;
-      
-      const popup = window.open(
-        data.url,
-        "google_auth_popup",
-        `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`
-      );
-      
-      if (!popup) {
-        toast.error("Popup blocked! Please allow popups for this site to sign in.");
-      }
+      await loginWithGoogle();
+      toast.success("Welcome back!");
+      navigate("/dashboard");
     } catch (err) {
-      console.error("Google login initiation failed:", err);
-      const errMsg = err.response?.data?.error || "Google Auth is missing some configuration on the server. Please check environment variables.";
-      toast.error(errMsg, { duration: 6000 });
+      toast.error(err.message || "Google login failed");
     }
   };
 
